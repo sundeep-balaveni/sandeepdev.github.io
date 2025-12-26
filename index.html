@@ -1,70 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CloudWatch Dashboard | Sandeep Balaveni</title>
+  <meta charset="UTF-8" />
+  <title>Cloud Operations Center | Sandeep Balaveni</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<header class="cw-header">
-  <div>
-    <h1>CloudWatch</h1>
-    <span class="subtitle">Overview · Production · ap-south-1</span>
-  </div>
-</header>
+<!-- HUD -->
+<div class="hud">
+  <h1>Cloud Operations Center</h1>
+  <p>AWS · Production · Cloud Engineer Portfolio</p>
+</div>
 
-<main class="dashboard">
+<!-- Tooltip -->
+<div id="tooltip"></div>
 
-  <!-- 8 METRIC WIDGETS -->
-  <div class="widget">
-    <div class="title">EC2 CPU Utilization</div>
-    <canvas id="cpu"></canvas>
-  </div>
+<canvas id="scene"></canvas>
 
-  <div class="widget">
-    <div class="title">Memory Utilization</div>
-    <canvas id="memory"></canvas>
-  </div>
-
-  <div class="widget">
-    <div class="title">Disk Read / Write</div>
-    <canvas id="disk"></canvas>
-  </div>
-
-  <div class="widget">
-    <div class="title">Network In</div>
-    <canvas id="netin"></canvas>
-  </div>
-
-  <div class="widget">
-    <div class="title">Network Out</div>
-    <canvas id="netout"></canvas>
-  </div>
-
-  <div class="widget">
-    <div class="title">Request Count</div>
-    <canvas id="req"></canvas>
-  </div>
-
-  <div class="widget">
-    <div class="title">HTTP 5XX Errors</div>
-    <canvas id="err"></canvas>
-  </div>
-
-  <div class="widget">
-    <div class="title">Target Response Time</div>
-    <canvas id="lat"></canvas>
-  </div>
-
-</main>
-
-<footer class="cw-footer">
-  Portfolio dashboard representing deployed AWS workloads (2024)
-</footer>
-
-<script src="dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="scene.js"></script>
 </body>
 </html>

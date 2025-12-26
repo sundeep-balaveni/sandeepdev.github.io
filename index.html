@@ -45,24 +45,14 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 }
 .toggle:hover { border-color:#3b82f6; color:#3b82f6; }
 
-.incident {
-  display:none;
-  background:#7f1d1d;
-  color:#fff;
-  padding:10px;
-  text-align:center;
-  font-weight:600;
-}
+.code { font-family:monospace; color:#60a5fa; }
+
 .log-box { font-family:monospace; font-size:12px; height:180px; overflow:hidden; }
 .heat div { height:14px; margin-bottom:4px; }
 </style>
 </head>
 
 <body>
-
-<div id="incident" class="incident">
-🚨 INCIDENT: Queue consumer stalled – investigation in progress
-</div>
 
 <nav class="navbar px-4 py-2">
   <span class="navbar-brand fw-semibold">AppOrbit – Test_v1_04</span>
@@ -74,58 +64,62 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 
 <div class="container-fluid mt-4">
 
-<!-- ================= EXISTING DASHBOARD (UNCHANGED) ================= -->
+<!-- ================= CORE METRICS ================= -->
+<div class="row g-4">
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU Utilization</div><div class="metric-value"><span id="cpuVal">45</span>%</div><div id="cpu" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory Utilization</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Request Rate</div><div class="metric-value"><span id="rpsVal">1240</span> rps</div><div id="rps" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Latency</div><div class="metric-value"><span id="latVal">118</span> ms</div><div id="latency" class="chart"></div></div></div>
+</div>
 
-<!-- SERVICE HEALTH -->
+<!-- ================= NEW GRAPHS ================= -->
 <div class="row g-4 mt-3">
-  <div class="col-md-3"><div class="card p-3 text-center"><div class="metric-title">API Service</div><div class="metric-value text-success" id="apiHealth">HEALTHY</div><small>99.96% uptime</small></div></div>
-  <div class="col-md-3"><div class="card p-3 text-center"><div class="metric-title">Database</div><div class="metric-value text-success">HEALTHY</div><small>Connections stable</small></div></div>
-  <div class="col-md-3"><div class="card p-3 text-center"><div class="metric-title">Queue</div><div class="metric-value text-warning" id="queueHealth">DEGRADED</div><small>Consumer lag</small></div></div>
-  <div class="col-md-3"><div class="card p-3 text-center"><div class="metric-title">Cache</div><div class="metric-value text-success">HEALTHY</div><small>Hit ratio normal</small></div></div>
-</div>
 
-<!-- SLA / SLO -->
-<div class="row g-4 mt-2">
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">SLA Target</div><div class="metric-value">99.90%</div></div></div>
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Current SLO</div><div class="metric-value" id="slo">99.96%</div></div></div>
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Error Budget</div><div class="metric-value" id="budget">82%</div></div></div>
-</div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="metric-title">Load Balancer Target Response Time</div>
+      <div id="lbLatency" class="chart"></div>
+    </div>
+  </div>
 
-<!-- HEATMAP + LOGS -->
-<div class="row g-4 mt-2">
-  <div class="col-md-6"><div class="card p-3"><h6 class="text-muted">Traffic Heatmap</h6><div id="heat" class="heat"></div></div></div>
-  <div class="col-md-6"><div class="card p-3"><h6 class="text-muted">Live Logs</h6><div id="logs" class="log-box"></div></div></div>
-</div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="metric-title">HTTP Status Codes</div>
+      <div id="httpCodes" class="chart"></div>
+    </div>
+  </div>
 
-<!-- USERS -->
-<div class="row g-4 mt-2">
-  <div class="col-md-12"><div class="card p-3">
-    Active Users: <span id="users">320</span> |
-    Sessions: <span id="sessions">860</span> |
-    Error Rate: <span id="errRate">0.8%</span>
-  </div></div>
-</div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="metric-title">Database Connections</div>
+      <div id="dbConn" class="chart"></div>
+    </div>
+  </div>
 
-<!-- ================= ADDITIONAL DASHBOARDS (NEW) ================= -->
-
-<div class="row g-4 mt-4">
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Load Balancer Request Count</div><div id="lbReq" class="chart"></div></div></div>
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Database Query Latency</div><div id="dbLatency" class="chart"></div></div></div>
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Error Rate %</div><div id="errorGraph" class="chart"></div></div></div>
 </div>
 
 <div class="row g-4 mt-2">
-  <div class="col-md-6"><div class="card p-3"><div class="metric-title">Pod Memory Usage (Replicas)</div><div id="podMemory" class="chart"></div></div></div>
-  <div class="col-md-6"><div class="card p-3"><div class="metric-title">Queue Consumer Throughput</div><div id="queueThroughput" class="chart"></div></div></div>
-</div>
 
-<div class="row g-4 mt-2">
-  <div class="col-md-12"><div class="card p-3"><div class="metric-title">HTTP Status Codes Trend</div><div id="httpTrend" class="chart"></div></div></div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="metric-title">Pod CPU Usage by Replica</div>
+      <div id="podCpu" class="chart"></div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="metric-title">Queue Processing Rate</div>
+      <div id="queueRate" class="chart"></div>
+    </div>
+  </div>
+
 </div>
 
 </div>
 
 <script>
+/* ---------- GRAPH HELPERS ---------- */
 function line(id,color,fill=false){
   const y=Array(40).fill(0);
   Plotly.newPlot(id,[{y,type:"scattergl",mode:"lines",fill:fill?"tozeroy":null,line:{color,width:2}}],
@@ -133,6 +127,7 @@ function line(id,color,fill=false){
   {displayModeBar:false});
   return y;
 }
+
 function bar(id,color){
   const y=Array(20).fill(0);
   Plotly.newPlot(id,[{y,type:"bar",marker:{color}}],
@@ -140,35 +135,65 @@ function bar(id,color){
   {displayModeBar:false});
   return y;
 }
+
+/* ---------- EXISTING ---------- */
+const cpu=line("cpu","#60a5fa"),
+memory=line("memory","#34c38f",true),
+latency=line("latency","#ff6b6b"),
+rps=bar("rps","#a084e8");
+
+/* ---------- NEW ---------- */
+const lbLatency=line("lbLatency","#38bdf8");
+const dbConnections=line("dbConn","#22c55e");
+const queueRate=bar("queueRate","#f59e0b");
+
+Plotly.newPlot("httpCodes",[
+  {y:[90],type:"bar",name:"2xx",marker:{color:"#22c55e"}},
+  {y:[6],type:"bar",name:"4xx",marker:{color:"#fbbf24"}},
+  {y:[1],type:"bar",name:"5xx",marker:{color:"#ef4444"}}
+],{
+  barmode:"stack",
+  margin:{l:30,r:10,t:10,b:20},
+  paper_bgcolor:"transparent",
+  plot_bgcolor:"transparent",
+  xaxis:{visible:false},
+  yaxis:{visible:false}
+},{displayModeBar:false});
+
+Plotly.newPlot("podCpu",[
+  {y:[30],type:"scattergl",mode:"lines",line:{color:"#60a5fa"}},
+  {y:[35],type:"scattergl",mode:"lines",line:{color:"#34c38f"}},
+  {y:[28],type:"scattergl",mode:"lines",line:{color:"#fbbf24"}}
+],{
+  margin:{l:30,r:10,t:10,b:20},
+  paper_bgcolor:"transparent",
+  plot_bgcolor:"transparent",
+  xaxis:{visible:false},
+  yaxis:{visible:false}
+},{displayModeBar:false});
+
 function slow(b,v,l){return l+(b+(Math.random()-.5)*v-l)*.05;}
 
-const lbReq=line("lbReq","#38bdf8");
-const dbLatency=line("dbLatency","#22c55e");
-const errorGraph=line("errorGraph","#ef4444",true);
-const queueThroughput=bar("queueThroughput","#f59e0b");
-
-Plotly.newPlot("podMemory",[
-  {y:[400],type:"scattergl",mode:"lines",line:{color:"#60a5fa"}},
-  {y:[380],type:"scattergl",mode:"lines",line:{color:"#34c38f"}},
-  {y:[420],type:"scattergl",mode:"lines",line:{color:"#fbbf24"}}
-],{margin:{l:30,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},{displayModeBar:false});
-
-Plotly.newPlot("httpTrend",[
-  {y:[95],type:"scattergl",mode:"lines",line:{color:"#22c55e"}},
-  {y:[4],type:"scattergl",mode:"lines",line:{color:"#fbbf24"}},
-  {y:[1],type:"scattergl",mode:"lines",line:{color:"#ef4444"}}
-],{margin:{l:30,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},{displayModeBar:false});
-
 setInterval(()=>{
-  lbReq.push(slow(1200,400,lbReq.at(-1))); lbReq.shift();
-  dbLatency.push(slow(45,20,dbLatency.at(-1))); dbLatency.shift();
-  errorGraph.push(slow(1.2,0.6,errorGraph.at(-1))); errorGraph.shift();
-  queueThroughput.push(300+Math.random()*200); queueThroughput.shift();
+  cpu.push(slow(45,12,cpu.at(-1))); cpu.shift();
+  memory.push(slow(68,6,memory.at(-1))); memory.shift();
+  latency.push(slow(118,20,latency.at(-1))); latency.shift();
+  rps.push(900+Math.random()*600); rps.shift();
 
-  Plotly.update("lbReq",{y:[lbReq]});
-  Plotly.update("dbLatency",{y:[dbLatency]});
-  Plotly.update("errorGraph",{y:[errorGraph]});
-  Plotly.update("queueThroughput",{y:[queueThroughput]});
+  lbLatency.push(slow(110,25,lbLatency.at(-1))); lbLatency.shift();
+  dbConnections.push(slow(30,8,dbConnections.at(-1))); dbConnections.shift();
+  queueRate.push(400+Math.random()*200); queueRate.shift();
+
+  Plotly.update("cpu",{y:[cpu]});
+  Plotly.update("memory",{y:[memory]});
+  Plotly.update("latency",{y:[latency]});
+  Plotly.update("rps",{y:[rps]});
+  Plotly.update("lbLatency",{y:[lbLatency]});
+  Plotly.update("dbConn",{y:[dbConnections]});
+  Plotly.update("queueRate",{y:[queueRate]});
+
+  Plotly.update("httpCodes",{y:[[90],[6],[Math.random()*2]]});
+
 },4000);
 
 function toggleTheme(){document.body.classList.toggle("light");}

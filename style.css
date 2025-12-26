@@ -1,65 +1,37 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
+  background: radial-gradient(circle at top, #020617, #000);
+  overflow: hidden;
   font-family: "Segoe UI", system-ui;
-  background: #0f1b2a;
+  color: white;
+}
+
+.hud {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(14px);
+  border-radius: 14px;
+  padding: 18px 22px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 50px rgba(56,189,248,0.35);
+  z-index: 10;
+}
+
+#tooltip {
+  position: absolute;
+  padding: 10px 14px;
+  background: rgba(2,6,23,0.85);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
   color: #e5e7eb;
-}
-
-/* HEADER */
-.cw-header {
-  background: #1f2937;
-  padding: 18px 24px;
-  border-bottom: 1px solid #374151;
-}
-
-.cw-header h1 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.subtitle {
   font-size: 12px;
-  color: #9ca3af;
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 0 30px rgba(56,189,248,0.4);
 }
 
-/* DASHBOARD GRID */
-.dashboard {
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-/* WIDGET */
-.widget {
-  background: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 6px;
-  padding: 10px;
-  height: 200px;
-}
-
-.title {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-bottom: 6px;
-}
-
-/* CHART */
 canvas {
-  width: 100% !important;
-  height: 150px !important;
-}
-
-/* FOOTER */
-.cw-footer {
-  text-align: center;
-  padding: 14px;
-  font-size: 12px;
-  color: #9ca3af;
-  border-top: 1px solid #374151;
+  display: block;
 }

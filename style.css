@@ -1,14 +1,15 @@
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #020617, #000);
+  background: #0b1220;
   color: #e5e7eb;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Segoe UI", system-ui;
 }
 
+/* TOP BAR */
 .topbar {
   display: flex;
   justify-content: space-between;
-  padding: 20px 30px;
+  padding: 18px 30px;
   background: #020617;
   border-bottom: 1px solid #1e293b;
 }
@@ -18,58 +19,60 @@ body {
   font-weight: bold;
 }
 
-.dashboard {
+/* METRIC TILES */
+.tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px 30px;
+}
+
+.tile {
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.tile b {
+  font-size: 1.6rem;
+}
+
+.cpu { background: linear-gradient(135deg, #ef4444, #7f1d1d); }
+.mem { background: linear-gradient(135deg, #22c55e, #064e3b); }
+.net { background: linear-gradient(135deg, #8b5cf6, #312e81); }
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
   gap: 25px;
   padding: 30px;
 }
 
 .panel {
-  background: linear-gradient(145deg, #020617, #020617);
+  background: #020617;
   border: 1px solid #1e293b;
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0 0 30px rgba(56,189,248,0.05);
 }
 
-.panel h3 {
+.panel-title {
   color: #38bdf8;
-  margin-bottom: 10px;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
 }
 
-.metric-card canvas {
-  height: 180px !important;
-}
-
-.cpu {
-  border-left: 4px solid #ef4444;
-}
-
-.memory {
-  border-left: 4px solid #22c55e;
-}
-
-.network {
-  border-left: 4px solid #a855f7;
-}
-
+/* TERMINAL */
 .terminal pre {
+  background: #020617;
   color: #22c55e;
   font-family: monospace;
+  font-size: 0.85rem;
 }
 
-.experience ul li {
-  margin-bottom: 8px;
-}
-
-.publication {
-  padding: 40px;
-  border-top: 1px solid #1e293b;
-}
-
-.publication a {
-  color: #38bdf8;
+/* RESEARCH */
+.research {
+  margin: 30px;
 }
 
 footer {

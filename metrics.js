@@ -1,9 +1,14 @@
-function rand(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
+function r(min, max) {
+  return (Math.random() * (max - min) + min).toFixed(2);
 }
 
 setInterval(() => {
-  document.getElementById("cpuVal").innerText = rand(20, 85) + "%";
-  document.getElementById("memVal").innerText = rand(40, 90) + "%";
-  document.getElementById("netVal").innerText = rand(5, 50) + " Mbps";
-}, 2000);
+  cpu.innerText = r(20, 75) + "%";
+  memory.innerText = r(40, 85) + "%";
+  disk.innerText = Math.floor(r(80, 220)) + " MB/s";
+  netIn.innerText = r(10, 40) + " Mbps";
+  netOut.innerText = r(8, 35) + " Mbps";
+  req.innerText = Math.floor(r(800, 2200));
+  error.innerText = r(0.01, 0.08) + "%";
+  latency.innerText = Math.floor(r(90, 240)) + " ms";
+}, 3000);

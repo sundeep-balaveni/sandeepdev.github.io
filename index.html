@@ -12,44 +12,68 @@
 <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
 
 <style>
+:root {
+  --bg: #0b1220;
+  --card: #111827;
+  --border: #1f2937;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+}
+
+body.light {
+  --bg: #f4f6f9;
+  --card: #ffffff;
+  --border: #d1d5db;
+  --text: #111827;
+  --muted: #6b7280;
+}
+
 body {
-  background:#0b1220;
-  color:#e5e7eb;
-  font-family:system-ui;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui;
 }
+
 .navbar {
-  background:#111827;
-  border-bottom:1px solid #1f2937;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
 }
+
 .card {
-  background:#111827;
-  border:1px solid #1f2937;
-  border-radius:10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
+
 .metric-title {
-  font-size:13px;
-  color:#9ca3af;
+  font-size: 13px;
+  color: var(--muted);
 }
+
 .metric-value {
-  font-size:22px;
-  font-weight:600;
+  font-size: 22px;
+  font-weight: 600;
 }
+
 .chart {
-  height:160px;
+  height: 150px;
 }
+
 .alert-box {
-  background:#0f172a;
-  border-left:4px solid #fbbf24;
-  padding:10px;
-  margin-bottom:8px;
-  font-size:13px;
+  background: rgba(0,0,0,0.05);
+  border-left: 4px solid;
+  padding: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
 }
-.alert-ok { border-color:#22c55e; }
-.alert-warn { border-color:#fbbf24; }
-.alert-crit { border-color:#ef4444; }
+
+.ok { border-color: #22c55e; }
+.warn { border-color: #fbbf24; }
+.crit { border-color: #ef4444; }
+
 .code {
-  font-family:monospace;
-  color:#93c5fd;
+  font-family: monospace;
+  color: #3b82f6;
 }
 </style>
 </head>
@@ -58,85 +82,55 @@ body {
 
 <!-- HEADER -->
 <nav class="navbar px-4 py-2">
-  <span class="navbar-brand text-light fw-semibold">
+  <span class="navbar-brand fw-semibold">
     AppOrbit – Production Cloud Monitoring
   </span>
-  <span class="text-secondary ms-auto">
-    Region: ap-south-1 · VPC: prod-vpc-01
-  </span>
+  <div class="ms-auto d-flex align-items-center gap-3">
+    <span class="text-muted">ap-south-1 · prod</span>
+    <button class="btn btn-sm btn-outline-secondary" onclick="toggleTheme()">
+      Toggle Theme
+    </button>
+  </div>
 </nav>
 
 <div class="container-fluid mt-4">
 
-<!-- TOP METRICS -->
+<!-- CORE METRICS -->
 <div class="row g-4">
-  <div class="col-md-3">
-    <div class="card p-3">
-      <div class="metric-title">CPU Utilization</div>
-      <div class="metric-value"><span id="cpuVal">42</span>%</div>
-      <div id="cpu" class="chart"></div>
-    </div>
-  </div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU Utilization</div><div class="metric-value"><span id="cpuVal">42</span>%</div><div id="cpu" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory Utilization</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Request Rate</div><div class="metric-value"><span id="rpsVal">1240</span> rps</div><div id="rps" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Avg Latency</div><div class="metric-value"><span id="latVal">118</span> ms</div><div id="latency" class="chart"></div></div></div>
+</div>
 
-  <div class="col-md-3">
-    <div class="card p-3">
-      <div class="metric-title">Memory Utilization</div>
-      <div class="metric-value"><span id="memVal">68</span>%</div>
-      <div id="memory" class="chart"></div>
-    </div>
-  </div>
-
-  <div class="col-md-3">
-    <div class="card p-3">
-      <div class="metric-title">Request Rate</div>
-      <div class="metric-value"><span id="rpsVal">1,240</span> rps</div>
-      <div id="rps" class="chart"></div>
-    </div>
-  </div>
-
-  <div class="col-md-3">
-    <div class="card p-3">
-      <div class="metric-title">Avg Latency</div>
-      <div class="metric-value"><span id="latVal">118</span> ms</div>
-      <div id="latency" class="chart"></div>
-    </div>
-  </div>
+<!-- PLATFORM METRICS -->
+<div class="row g-4 mt-1">
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Network In</div><div class="metric-value"><span id="netInVal">45</span> Mbps</div><div id="netin" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Disk IOPS</div><div class="metric-value"><span id="iopsVal">320</span></div><div id="iops" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Queue Depth</div><div class="metric-value"><span id="queueVal">38</span></div><div id="queue" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Cache Hit Ratio</div><div class="metric-value"><span id="cacheVal">94</span>%</div><div id="cache" class="chart"></div></div></div>
 </div>
 
 <!-- INFRA + ALERTS -->
 <div class="row g-4 mt-1">
 
-<!-- INFRA -->
 <div class="col-md-6">
   <div class="card p-3">
-    <h6 class="text-secondary">Infrastructure Status</h6>
-    <div class="mt-2">
-      Load Balancer: <span class="code">alb-prod-apporbit</span><br>
-      Public IP: <span class="code">13.234.XX.XX</span><br>
-      Active Pods: <span id="pods">6</span><br>
-      Message Queue Depth: <span id="queue">42</span><br>
-      Container Image: <span class="code">apporbit-api:v1.4.2</span>
-    </div>
+    <h6 class="text-muted">Infrastructure Details</h6>
+    Load Balancer: <span class="code">alb-apporbit-prod</span><br>
+    Public IP: <span class="code">13.234.xxx.xxx</span><br>
+    Active Pods: <span id="pods">6</span><br>
+    DB Connections: <span id="dbConn">28</span><br>
+    Container Image: <span class="code">apporbit-api:v1.4.2</span>
   </div>
 </div>
 
-<!-- ALERTS -->
 <div class="col-md-6">
   <div class="card p-3">
-    <h6 class="text-secondary">Recent Events & Alerts</h6>
-
-    <div class="alert-box alert-ok">
-      ✔ Target group healthy – all instances passing checks
-    </div>
-
-    <div class="alert-box alert-warn">
-      ⚠ Message queue depth increased (processing delay detected)
-    </div>
-
-    <div class="alert-box alert-ok">
-      ✔ Auto-scaling stable – no scale-out required
-    </div>
-
+    <h6 class="text-muted">Events & Alerts</h6>
+    <div class="alert-box ok">✔ Load balancer targets healthy</div>
+    <div class="alert-box warn">⚠ Message queue depth slightly elevated</div>
+    <div class="alert-box ok">✔ Auto-scaling stable</div>
   </div>
 </div>
 
@@ -145,7 +139,7 @@ body {
 </div>
 
 <script>
-/* -------- CHART SETUP (SLOW UPDATES) -------- */
+/* ---------- CHART HELPERS ---------- */
 function createLine(id, color, fill=false) {
   const y = Array(40).fill(0);
   Plotly.newPlot(id, [{
@@ -168,6 +162,10 @@ const cpu = createLine("cpu","#60a5fa");
 const mem = createLine("memory","#34c38f",true);
 const rps = createLine("rps","#a084e8");
 const lat = createLine("latency","#ff6b6b");
+const netin = createLine("netin","#38bdf8");
+const iops = createLine("iops","#fbbf24");
+const queue = createLine("queue","#f59e0b");
+const cache = createLine("cache","#22c55e");
 
 function slow(base, variance, prev) {
   const target = base + (Math.random()-0.5)*variance;
@@ -175,25 +173,41 @@ function slow(base, variance, prev) {
 }
 
 setInterval(() => {
-  cpu.push(slow(45,10,cpu[cpu.length-1])); cpu.shift();
-  mem.push(slow(68,5,mem[mem.length-1])); mem.shift();
-  rps.push(slow(1240,200,rps[rps.length-1])); rps.shift();
-  lat.push(slow(118,20,lat[lat.length-1])); lat.shift();
+  cpu.push(slow(45,10,cpu.at(-1))); cpu.shift();
+  mem.push(slow(68,5,mem.at(-1))); mem.shift();
+  rps.push(slow(1240,200,rps.at(-1))); rps.shift();
+  lat.push(slow(118,20,lat.at(-1))); lat.shift();
+  netin.push(slow(45,15,netin.at(-1))); netin.shift();
+  iops.push(slow(320,80,iops.at(-1))); iops.shift();
+  queue.push(slow(38,15,queue.at(-1))); queue.shift();
+  cache.push(slow(94,3,cache.at(-1))); cache.shift();
 
   Plotly.update("cpu",{y:[cpu]});
   Plotly.update("memory",{y:[mem]});
   Plotly.update("rps",{y:[rps]});
   Plotly.update("latency",{y:[lat]});
+  Plotly.update("netin",{y:[netin]});
+  Plotly.update("iops",{y:[iops]});
+  Plotly.update("queue",{y:[queue]});
+  Plotly.update("cache",{y:[cache]});
 
-  document.getElementById("cpuVal").innerText = cpu[cpu.length-1].toFixed(0);
-  document.getElementById("memVal").innerText = mem[mem.length-1].toFixed(0);
-  document.getElementById("rpsVal").innerText = rps[rps.length-1].toFixed(0);
-  document.getElementById("latVal").innerText = lat[lat.length-1].toFixed(0);
+  cpuVal.innerText = cpu.at(-1).toFixed(0);
+  memVal.innerText = mem.at(-1).toFixed(0);
+  rpsVal.innerText = rps.at(-1).toFixed(0);
+  latVal.innerText = lat.at(-1).toFixed(0);
+  netInVal.innerText = netin.at(-1).toFixed(0);
+  iopsVal.innerText = iops.at(-1).toFixed(0);
+  queueVal.innerText = queue.at(-1).toFixed(0);
+  cacheVal.innerText = cache.at(-1).toFixed(0);
 
-  document.getElementById("pods").innerText = 6 + Math.round(Math.random());
-  document.getElementById("queue").innerText = Math.round(30 + Math.random()*30);
+  pods.innerText = 6 + Math.round(Math.random());
+  dbConn.innerText = 20 + Math.round(Math.random()*15);
+}, 4000);
 
-}, 4000); // slow like CloudWatch
+/* ---------- THEME TOGGLE ---------- */
+function toggleTheme() {
+  document.body.classList.toggle("light");
+}
 </script>
 
 </body>

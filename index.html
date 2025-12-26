@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sandeep | Cloud Engineer Dashboard</title>
+  <title>Cloud Engineer Console | Sandeep</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -10,16 +10,24 @@
 <body>
 
 <header class="topbar">
-  <h1>☁ Cloud Monitoring Console</h1>
+  <h1>☁ Cloud Engineer Console</h1>
   <span class="live">● LIVE</span>
 </header>
 
-<div class="dashboard">
+<!-- METRIC TILES -->
+<section class="tiles">
+  <div class="tile cpu">CPU<br><b id="cpuVal">42%</b></div>
+  <div class="tile mem">Memory<br><b id="memVal">63%</b></div>
+  <div class="tile net">Network<br><b id="netVal">18 Mbps</b></div>
+</section>
 
-  <!-- LEFT TERMINAL -->
+<!-- MAIN GRID -->
+<section class="grid">
+
+  <!-- TERMINAL -->
   <div class="panel terminal">
-    <h3>terminal</h3>
-    <pre>
+    <div class="panel-title">terminal</div>
+<pre>
 $ whoami
 sandeep-balaveni
 
@@ -31,54 +39,47 @@ $ uptime
 
 $ active_projects
 scriptlytech | codehive | apporbit
-    </pre>
+</pre>
   </div>
 
-  <!-- CPU -->
-  <div class="panel metric-card cpu">
-    <h3>CPU Usage</h3>
+  <!-- CPU CHART -->
+  <div class="panel">
+    <div class="panel-title">CPU Usage</div>
     <canvas id="cpuChart"></canvas>
   </div>
 
-  <!-- MEMORY -->
-  <div class="panel metric-card memory">
-    <h3>Memory Usage</h3>
-    <canvas id="memoryChart"></canvas>
-  </div>
-
-  <!-- NETWORK -->
-  <div class="panel metric-card network">
-    <h3>Network I/O</h3>
-    <canvas id="networkChart"></canvas>
-  </div>
-
   <!-- EXPERIENCE -->
-  <div class="panel experience">
-    <h3>Deployments (2024)</h3>
+  <div class="panel">
+    <div class="panel-title">Deployments (2024)</div>
     <ul>
-      <li><b>ScriptlyTech</b> – Docker, Ansible, CloudWatch</li>
-      <li><b>CodeHive</b> – S3 Hosting, Linux Ops</li>
-      <li><b>AppOrbit Labs</b> – Container Optimization</li>
+      <li><b>ScriptlyTech</b> — Docker, Ansible, CloudWatch</li>
+      <li><b>CodeHive</b> — AWS S3, Linux Ops</li>
+      <li><b>AppOrbit Labs</b> — Container Optimization</li>
     </ul>
   </div>
 
-</div>
+  <!-- MEMORY CHART -->
+  <div class="panel">
+    <div class="panel-title">Memory Usage</div>
+    <canvas id="memChart"></canvas>
+  </div>
 
-<section class="publication">
-  <h2>📄 Research Publication</h2>
-  <p>
-    DOI:
-    <a href="https://doi.org/10.5281/zenodo.18058506" target="_blank">
-      10.5281/zenodo.18058506
-    </a>
-  </p>
+</section>
+
+<!-- RESEARCH -->
+<section class="panel research">
+  <div class="panel-title">Research Publication</div>
+  DOI:
+  <a href="https://doi.org/10.5281/zenodo.18058506" target="_blank">
+    10.5281/zenodo.18058506
+  </a>
 </section>
 
 <footer>
   linkedin.com/in/sandeep-balaveni
 </footer>
 
-<script src="metrics.js"></script>
 <script src="charts.js"></script>
+<script src="metrics.js"></script>
 </body>
 </html>

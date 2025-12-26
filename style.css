@@ -1,37 +1,58 @@
+:root {
+  --bg: #0b1220;
+  --card: #111827;
+  --border: #1f2937;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+}
+
+body[data-theme="light"] {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --border: #d1d5db;
+  --text: #111827;
+  --muted: #6b7280;
+}
+
 body {
-  margin: 0;
-  background: radial-gradient(circle at top, #020617, #000);
-  overflow: hidden;
-  font-family: "Segoe UI", system-ui;
-  color: white;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.hud {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(14px);
-  border-radius: 14px;
-  padding: 18px 22px;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 0 50px rgba(56,189,248,0.35);
-  z-index: 10;
+.navbar {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
 }
 
-#tooltip {
-  position: absolute;
-  padding: 10px 14px;
-  background: rgba(2,6,23,0.85);
-  border: 1px solid rgba(255,255,255,0.15);
+.metric-card {
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  color: #e5e7eb;
-  font-size: 12px;
-  pointer-events: none;
-  display: none;
-  box-shadow: 0 0 30px rgba(56,189,248,0.4);
+  padding: 12px;
+  height: 260px;
 }
 
-canvas {
-  display: block;
+.metric-card h6 {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.metric-card > div {
+  height: 200px;
+}
+
+.section-title {
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.architecture {
+  background: var(--card);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.project-list li {
+  margin-bottom: 8px;
 }

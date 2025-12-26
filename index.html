@@ -13,67 +13,53 @@
 
 <style>
 :root {
-  --bg: #0b1220;
-  --card: #111827;
-  --border: #1f2937;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
+  --bg:#0b1220; --card:#111827; --border:#1f2937;
+  --text:#e5e7eb; --muted:#9ca3af;
 }
-
 body.light {
-  --bg: #f4f6f9;
-  --card: #ffffff;
-  --border: #d1d5db;
-  --text: #111827;
-  --muted: #6b7280;
+  --bg:#f4f6f9; --card:#ffffff; --border:#d1d5db;
+  --text:#111827; --muted:#6b7280;
 }
-
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui;
+}
+.navbar { background:var(--card); border-bottom:1px solid var(--border); }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; }
+.metric-title { font-size:13px; color:var(--muted); }
+.metric-value { font-size:22px; font-weight:600; }
+.chart { height:150px; }
+
+/* ALERT FLOW */
+.alert-stream { max-height:260px; overflow:hidden; }
+.alert-item {
+  background:rgba(0,0,0,0.05);
+  border-left:4px solid;
+  padding:10px;
+  font-size:13px;
+  margin-bottom:8px;
+  animation: slideIn 0.5s ease;
+}
+.ok{border-color:#22c55e;}
+.warn{border-color:#fbbf24;}
+.crit{border-color:#ef4444;}
+
+@keyframes slideIn {
+  from { transform:translateX(40px); opacity:0; }
+  to { transform:translateX(0); opacity:1; }
 }
 
-.navbar {
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
+button.toggle {
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:6px 12px;
+  border-radius:6px;
 }
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.metric-title {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.metric-value {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.chart {
-  height: 150px;
-}
-
-.alert-box {
-  background: rgba(0,0,0,0.05);
-  border-left: 4px solid;
-  padding: 10px;
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-
-.ok { border-color: #22c55e; }
-.warn { border-color: #fbbf24; }
-.crit { border-color: #ef4444; }
-
-.code {
-  font-family: monospace;
-  color: #3b82f6;
+button.toggle:hover {
+  border-color:#3b82f6;
+  color:#3b82f6;
 }
 </style>
 </head>
@@ -82,56 +68,91 @@ body {
 
 <!-- HEADER -->
 <nav class="navbar px-4 py-2">
-  <span class="navbar-brand fw-semibold">
-    AppOrbit – Production Cloud Monitoring
-  </span>
-  <div class="ms-auto d-flex align-items-center gap-3">
+  <span class="navbar-brand fw-semibold">AppOrbit – Production Monitoring</span>
+  <div class="ms-auto d-flex gap-3 align-items-center">
     <span class="text-muted">ap-south-1 · prod</span>
-    <button class="btn btn-sm btn-outline-secondary" onclick="toggleTheme()">
-      Toggle Theme
-    </button>
+    <button class="toggle" onclick="toggleTheme()">Dark / Light</button>
   </div>
 </nav>
 
 <div class="container-fluid mt-4">
 
-<!-- CORE METRICS -->
+<!-- METRICS -->
 <div class="row g-4">
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU Utilization</div><div class="metric-value"><span id="cpuVal">42</span>%</div><div id="cpu" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory Utilization</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Request Rate</div><div class="metric-value"><span id="rpsVal">1240</span> rps</div><div id="rps" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Avg Latency</div><div class="metric-value"><span id="latVal">118</span> ms</div><div id="latency" class="chart"></div></div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">CPU Utilization</div>
+<div class="metric-value"><span id="cpuVal">45</span>%</div>
+<div id="cpu" class="chart"></div>
+</div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">Memory Utilization</div>
+<div class="metric-value"><span id="memVal">68</span>%</div>
+<div id="memory" class="chart"></div>
+</div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">Request Rate</div>
+<div class="metric-value"><span id="rpsVal">1240</span> rps</div>
+<div id="rps" class="chart"></div>
+</div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">Latency</div>
+<div class="metric-value"><span id="latVal">118</span> ms</div>
+<div id="latency" class="chart"></div>
+</div></div>
+
 </div>
 
-<!-- PLATFORM METRICS -->
+<!-- SECOND ROW -->
 <div class="row g-4 mt-1">
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Network In</div><div class="metric-value"><span id="netInVal">45</span> Mbps</div><div id="netin" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Disk IOPS</div><div class="metric-value"><span id="iopsVal">320</span></div><div id="iops" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Queue Depth</div><div class="metric-value"><span id="queueVal">38</span></div><div id="queue" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Cache Hit Ratio</div><div class="metric-value"><span id="cacheVal">94</span>%</div><div id="cache" class="chart"></div></div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">Network In</div>
+<div class="metric-value"><span id="netVal">42</span> Mbps</div>
+<div id="network" class="chart"></div>
+</div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">Disk IOPS</div>
+<div class="metric-value"><span id="diskVal">320</span></div>
+<div id="disk" class="chart"></div>
+</div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">Queue Depth</div>
+<div class="metric-value"><span id="queueVal">38</span></div>
+<div id="queue" class="chart"></div>
+</div></div>
+
+<div class="col-md-3"><div class="card p-3">
+<div class="metric-title">Cache Hit Ratio</div>
+<div class="metric-value"><span id="cacheVal">94</span>%</div>
+<div id="cache" class="chart"></div>
+</div></div>
+
 </div>
 
 <!-- INFRA + ALERTS -->
 <div class="row g-4 mt-1">
 
 <div class="col-md-6">
-  <div class="card p-3">
-    <h6 class="text-muted">Infrastructure Details</h6>
-    Load Balancer: <span class="code">alb-apporbit-prod</span><br>
-    Public IP: <span class="code">13.234.xxx.xxx</span><br>
-    Active Pods: <span id="pods">6</span><br>
-    DB Connections: <span id="dbConn">28</span><br>
-    Container Image: <span class="code">apporbit-api:v1.4.2</span>
-  </div>
+<div class="card p-3">
+<h6 class="text-muted">Infrastructure</h6>
+Load Balancer: alb-apporbit-prod<br>
+Public IP: 13.234.xxx.xxx<br>
+Pods Running: <span id="pods">6</span><br>
+Message Queue: SQS-prod-events
+</div>
 </div>
 
 <div class="col-md-6">
-  <div class="card p-3">
-    <h6 class="text-muted">Events & Alerts</h6>
-    <div class="alert-box ok">✔ Load balancer targets healthy</div>
-    <div class="alert-box warn">⚠ Message queue depth slightly elevated</div>
-    <div class="alert-box ok">✔ Auto-scaling stable</div>
-  </div>
+<div class="card p-3">
+<h6 class="text-muted">Live Alerts</h6>
+<div class="alert-stream" id="alerts"></div>
+</div>
 </div>
 
 </div>
@@ -139,75 +160,86 @@ body {
 </div>
 
 <script>
-/* ---------- CHART HELPERS ---------- */
-function createLine(id, color, fill=false) {
-  const y = Array(40).fill(0);
-  Plotly.newPlot(id, [{
-    y,
-    type:"scattergl",
-    mode:"lines",
-    fill: fill ? "tozeroy" : undefined,
-    line:{color,width:2}
-  }], {
-    margin:{l:20,r:10,t:10,b:20},
-    paper_bgcolor:"transparent",
-    plot_bgcolor:"transparent",
-    xaxis:{visible:false},
-    yaxis:{visible:false}
-  }, {displayModeBar:false});
+/* ---------- CHART CREATION ---------- */
+function lineChart(id,color,fill=false){
+  const y=Array(40).fill(0);
+  Plotly.newPlot(id,[{y,type:"scattergl",mode:"lines",fill:fill?"tozeroy":null,line:{color,width:2}}],
+  {margin:{l:20,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
+  {displayModeBar:false});
   return y;
 }
 
-const cpu = createLine("cpu","#60a5fa");
-const mem = createLine("memory","#34c38f",true);
-const rps = createLine("rps","#a084e8");
-const lat = createLine("latency","#ff6b6b");
-const netin = createLine("netin","#38bdf8");
-const iops = createLine("iops","#fbbf24");
-const queue = createLine("queue","#f59e0b");
-const cache = createLine("cache","#22c55e");
-
-function slow(base, variance, prev) {
-  const target = base + (Math.random()-0.5)*variance;
-  return prev + (target-prev)*0.05;
+function barChart(id,color){
+  const y=Array(15).fill(0);
+  Plotly.newPlot(id,[{y,type:"bar",marker:{color}}],
+  {margin:{l:20,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
+  {displayModeBar:false});
+  return y;
 }
 
-setInterval(() => {
-  cpu.push(slow(45,10,cpu.at(-1))); cpu.shift();
-  mem.push(slow(68,5,mem.at(-1))); mem.shift();
-  rps.push(slow(1240,200,rps.at(-1))); rps.shift();
-  lat.push(slow(118,20,lat.at(-1))); lat.shift();
-  netin.push(slow(45,15,netin.at(-1))); netin.shift();
-  iops.push(slow(320,80,iops.at(-1))); iops.shift();
-  queue.push(slow(38,15,queue.at(-1))); queue.shift();
+const cpu=lineChart("cpu","#60a5fa");
+const memory=lineChart("memory","#34c38f",true);
+const latency=lineChart("latency","#ff6b6b");
+const cache=lineChart("cache","#22c55e",true);
+const rps=barChart("rps","#a084e8");
+const network=barChart("network","#38bdf8");
+const disk=barChart("disk","#fbbf24");
+const queue=lineChart("queue","#f59e0b");
+
+function slow(base,varc,last){ return last+(base+(Math.random()-0.5)*varc-last)*0.05; }
+
+setInterval(()=>{
+  cpu.push(slow(45,12,cpu.at(-1))); cpu.shift();
+  memory.push(slow(68,5,memory.at(-1))); memory.shift();
+  latency.push(slow(118,20,latency.at(-1))); latency.shift();
   cache.push(slow(94,3,cache.at(-1))); cache.shift();
+  queue.push(slow(38,15,queue.at(-1))); queue.shift();
+
+  rps.push(1000+Math.random()*600); rps.shift();
+  network.push(30+Math.random()*40); network.shift();
+  disk.push(200+Math.random()*200); disk.shift();
 
   Plotly.update("cpu",{y:[cpu]});
-  Plotly.update("memory",{y:[mem]});
-  Plotly.update("rps",{y:[rps]});
-  Plotly.update("latency",{y:[lat]});
-  Plotly.update("netin",{y:[netin]});
-  Plotly.update("iops",{y:[iops]});
-  Plotly.update("queue",{y:[queue]});
+  Plotly.update("memory",{y:[memory]});
+  Plotly.update("latency",{y:[latency]});
   Plotly.update("cache",{y:[cache]});
+  Plotly.update("queue",{y:[queue]});
+  Plotly.update("rps",{y:[rps]});
+  Plotly.update("network",{y:[network]});
+  Plotly.update("disk",{y:[disk]});
 
-  cpuVal.innerText = cpu.at(-1).toFixed(0);
-  memVal.innerText = mem.at(-1).toFixed(0);
-  rpsVal.innerText = rps.at(-1).toFixed(0);
-  latVal.innerText = lat.at(-1).toFixed(0);
-  netInVal.innerText = netin.at(-1).toFixed(0);
-  iopsVal.innerText = iops.at(-1).toFixed(0);
-  queueVal.innerText = queue.at(-1).toFixed(0);
-  cacheVal.innerText = cache.at(-1).toFixed(0);
+  cpuVal.innerText=cpu.at(-1).toFixed(0);
+  memVal.innerText=memory.at(-1).toFixed(0);
+  rpsVal.innerText=Math.round(rps.at(-1));
+  latVal.innerText=latency.at(-1).toFixed(0);
+  netVal.innerText=Math.round(network.at(-1));
+  diskVal.innerText=Math.round(disk.at(-1));
+  queueVal.innerText=queue.at(-1).toFixed(0);
+  cacheVal.innerText=cache.at(-1).toFixed(0);
+  pods.innerText=6+Math.round(Math.random());
 
-  pods.innerText = 6 + Math.round(Math.random());
-  dbConn.innerText = 20 + Math.round(Math.random()*15);
-}, 4000);
+},4000);
 
-/* ---------- THEME TOGGLE ---------- */
-function toggleTheme() {
-  document.body.classList.toggle("light");
-}
+/* ---------- ALERT FLOW ---------- */
+const alertMessages=[
+  ["warn","⚠ Queue backlog increasing – consumer lag detected"],
+  ["ok","✔ Load balancer health checks passing"],
+  ["warn","⚠ Elevated latency on /api/orders endpoint"],
+  ["crit","❌ Message queue processing stalled briefly"],
+  ["ok","✔ Auto-scaling stable – no action required"]
+];
+
+setInterval(()=>{
+  const a=document.createElement("div");
+  const [cls,msg]=alertMessages[Math.floor(Math.random()*alertMessages.length)];
+  a.className=`alert-item ${cls}`;
+  a.innerText=new Date().toLocaleTimeString()+" — "+msg;
+  alerts.prepend(a);
+  if(alerts.children.length>5) alerts.removeChild(alerts.lastChild);
+},6000);
+
+/* ---------- THEME ---------- */
+function toggleTheme(){ document.body.classList.toggle("light"); }
 </script>
 
 </body>

@@ -5,80 +5,63 @@ const METRICS = {
   netin: { base: 25, variance: 8, color: "#38bdf8" },
   netout: { base: 20, variance: 6, color: "#22d3ee" },
   requests: { base: 1400, variance: 200, color: "#a78bfa" },
-  errors: { base: 1, variance: 0.5, color: "#f87171" },
+  errors: { base: 1, variance: 0.4, color: "#f87171" },
   latency: { base: 120, variance: 15, color: "#fb7185" }
 };
 
-const GRID = 20;
-const dataStore = {};
+const WINDOW = 60; // time points
+const state = {};
 
-// Smooth value generator (no spikes)
-function nextValue(prev, base, variance) {
-  const drift = (Math.random() - 0.5) * variance;
-  const target = base + drift;
-  return prev + (target - prev) * 0.15;
+// Smooth generator
+function smooth(prev, base, variance) {
+  const target = base + (Math.random() - 0.5) * variance;
+  return prev + (target - prev) * 0.08;
 }
 
-// Initialize metric grid
-function initGrid(base) {
-  return Array.from({ length: GRID }, () =>
-    Array.from({ length: GRID }, () => base)
-  );
-}
+// Init metric
+function initMetric(id, cfg) {
+  const y = Array.from({ length: WINDOW }, () => cfg.base);
+  const x = [...Array(WINDOW).keys()];
 
-// Create Plotly surface
-function createSurface(id, color, zData) {
   Plotly.newPlot(id, [{
-    type: "surface",
-    z: zData,
-    colorscale: [[0, color], [1, "#ffffff"]],
-    showscale: false
+    x, y,
+    type: "scattergl",
+    mode: "lines",
+    line: {
+      color: cfg.color,
+      width: 3,
+      shape: "spline"
+    }
   }], {
     margin: { l: 0, r: 0, t: 0, b: 0 },
     paper_bgcolor: "transparent",
-    scene: {
-      xaxis: { visible: false },
-      yaxis: { visible: false },
-      zaxis: { visible: false }
-    }
+    plot_bgcolor: "transparent",
+    xaxis: { visible: false },
+    yaxis: { visible: false }
   }, { displayModeBar: false });
+
+  state[id] = { x, y, cfg };
 }
 
 // Initialize all metrics
-Object.keys(METRICS).forEach(key => {
-  const { base, color } = METRICS[key];
-  const grid = initGrid(base);
-  dataStore[key] = grid;
-  createSurface(key, color, grid);
-});
+Object.keys(METRICS).forEach(id => initMetric(id, METRICS[id]));
 
-// Update surfaces in real time
-function updateMetrics() {
-  Object.keys(METRICS).forEach(key => {
-    const metric = METRICS[key];
-    const grid = dataStore[key];
+// REAL-TIME LOOP (60 FPS)
+function tick() {
+  Object.keys(state).forEach(id => {
+    const m = state[id];
+    m.y.shift();
+    m.y.push(smooth(m.y[m.y.length - 1], m.cfg.base, m.cfg.variance));
 
-    // shift rows upward
-    for (let i = 0; i < GRID - 1; i++) {
-      grid[i] = grid[i + 1];
-    }
-
-    // generate new row smoothly
-    const lastRow = grid[GRID - 2];
-    const newRow = lastRow.map(v =>
-      nextValue(v, metric.base, metric.variance)
-    );
-
-    grid[GRID - 1] = newRow;
-
-    Plotly.update(key, { z: [grid] });
+    Plotly.update(id, { y: [m.y] });
   });
+
+  requestAnimationFrame(tick);
 }
 
-// Update every 3 seconds (CloudWatch-like)
-setInterval(updateMetrics, 3000);
+tick(); // START animation
 
-// Theme toggle (already wired)
+// Theme toggle
 document.getElementById("themeToggle").onclick = () => {
   document.body.dataset.theme =
     document.body.dataset.theme === "dark" ? "light" : "dark";

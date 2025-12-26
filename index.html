@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sandeep Balaveni | Cloud Engineer Console</title>
+  <title>Sandeep | Cloud Engineer Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<header class="top-bar">
-  <span>☁ Cloud Engineer Control Panel</span>
-  <span class="status">STATUS: <b>ONLINE</b></span>
+<header class="topbar">
+  <h1>☁ Cloud Monitoring Console</h1>
+  <span class="live">● LIVE</span>
 </header>
 
-<div class="grid">
+<div class="dashboard">
 
-  <!-- TERMINAL -->
+  <!-- LEFT TERMINAL -->
   <div class="panel terminal">
-    <div class="panel-title">terminal</div>
+    <h3>terminal</h3>
     <pre>
 $ whoami
 sandeep-balaveni
@@ -26,77 +26,59 @@ sandeep-balaveni
 $ role
 cloud-engineer
 
-$ skills --list
-aws docker kubernetes linux ansible monitoring
+$ uptime
+99.98%
 
-$ current_focus
-reliable • scalable • automated infrastructure
+$ active_projects
+scriptlytech | codehive | apporbit
     </pre>
   </div>
 
-  <!-- SYSTEM STATUS -->
-  <div class="panel status-panel">
-    <div class="panel-title">system_status</div>
-    <ul>
-      <li>AWS ................. <span class="ok">OK</span></li>
-      <li>Docker .............. <span class="ok">OK</span></li>
-      <li>Kubernetes .......... <span class="ok">OK</span></li>
-      <li>Ansible ............. <span class="ok">OK</span></li>
-      <li>Monitoring .......... <span class="ok">ACTIVE</span></li>
-    </ul>
+  <!-- CPU -->
+  <div class="panel metric-card cpu">
+    <h3>CPU Usage</h3>
+    <canvas id="cpuChart"></canvas>
+  </div>
+
+  <!-- MEMORY -->
+  <div class="panel metric-card memory">
+    <h3>Memory Usage</h3>
+    <canvas id="memoryChart"></canvas>
+  </div>
+
+  <!-- NETWORK -->
+  <div class="panel metric-card network">
+    <h3>Network I/O</h3>
+    <canvas id="networkChart"></canvas>
   </div>
 
   <!-- EXPERIENCE -->
   <div class="panel experience">
-    <div class="panel-title">deployments_2024</div>
-    <p><b>ScriptlyTech</b> — ST-CLD-0424-UW</p>
+    <h3>Deployments (2024)</h3>
     <ul>
-      <li>Dockerized production workloads</li>
-      <li>Ansible-based server automation</li>
-      <li>AWS CloudWatch alerts & metrics</li>
+      <li><b>ScriptlyTech</b> – Docker, Ansible, CloudWatch</li>
+      <li><b>CodeHive</b> – S3 Hosting, Linux Ops</li>
+      <li><b>AppOrbit Labs</b> – Container Optimization</li>
     </ul>
-
-    <p><b>CodeHive Solutions</b> — UPW-INF-2024-02-CH</p>
-    <ul>
-      <li>S3 static website hosting</li>
-      <li>Linux performance tuning</li>
-    </ul>
-
-    <p><b>AppOrbit Labs</b> — Sep 2024</p>
-    <ul>
-      <li>Optimized container orchestration</li>
-      <li>Reusable Ansible playbooks</li>
-      <li>Proactive monitoring</li>
-    </ul>
-  </div>
-
-  <!-- METRICS -->
-  <div class="panel metrics">
-    <div class="panel-title">metrics</div>
-    <div class="metric">
-      <span>uptime</span><b>99.98%</b>
-    </div>
-    <div class="metric">
-      <span>alerts_handled</span><b>120+</b>
-    </div>
-    <div class="metric">
-      <span>deployments</span><b>40+</b>
-    </div>
   </div>
 
 </div>
 
-<!-- PUBLICATION -->
 <section class="publication">
-  <h3>research_publication</h3>
-  <p>DOI: <a href="https://doi.org/10.5281/zenodo.18058506" target="_blank">
-    10.5281/zenodo.18058506
-  </a></p>
+  <h2>📄 Research Publication</h2>
+  <p>
+    DOI:
+    <a href="https://doi.org/10.5281/zenodo.18058506" target="_blank">
+      10.5281/zenodo.18058506
+    </a>
+  </p>
 </section>
 
 <footer>
   linkedin.com/in/sandeep-balaveni
 </footer>
 
+<script src="metrics.js"></script>
+<script src="charts.js"></script>
 </body>
 </html>

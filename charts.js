@@ -1,17 +1,12 @@
-const labels = Array.from({ length: 10 }, (_, i) => `${i}s`);
+const labels = Array.from({ length: 12 }, (_, i) => `${i}s`);
 
-let cpuData = Array.from({ length: 10 }, () => Math.random() * 70);
-let memoryData = Array.from({ length: 10 }, () => Math.random() * 60);
-let networkData = Array.from({ length: 10 }, () => Math.random() * 50);
-
-function createChart(ctx, label, data, color) {
-  return new Chart(ctx, {
+function makeChart(id, color) {
+  return new Chart(document.getElementById(id), {
     type: 'line',
     data: {
       labels,
       datasets: [{
-        label,
-        data,
+        data: labels.map(() => Math.random() * 80),
         borderColor: color,
         backgroundColor: color + "33",
         tension: 0.4,
@@ -21,30 +16,12 @@ function createChart(ctx, label, data, color) {
     options: {
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, ticks: { color: "#94a3b8" } },
-        x: { ticks: { color: "#94a3b8" } }
+        x: { ticks: { color: "#64748b" } },
+        y: { ticks: { color: "#64748b" }, beginAtZero: true }
       }
     }
   });
 }
 
-const cpuChart = createChart(
-  document.getElementById("cpuChart"),
-  "CPU %",
-  cpuData,
-  "#ef4444"
-);
-
-const memoryChart = createChart(
-  document.getElementById("memoryChart"),
-  "Memory %",
-  memoryData,
-  "#22c55e"
-);
-
-const networkChart = createChart(
-  document.getElementById("networkChart"),
-  "Network Mbps",
-  networkData,
-  "#a855f7"
-);
+const cpuChart = makeChart("cpuChart", "#ef4444");
+const memChart = makeChart("memChart", "#22c55e");

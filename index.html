@@ -24,70 +24,60 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 .metric-value { font-size:22px; font-weight:600; }
 .chart { height:140px; }
 
-.alert-stream { max-height:240px; overflow:hidden; }
-.alert-item {
-  padding:8px; font-size:13px; margin-bottom:6px;
-  border-left:4px solid; background:rgba(0,0,0,.05);
-  animation:slide .4s ease;
-}
-.ok{border-color:#22c55e;}
-.warn{border-color:#fbbf24;}
-.crit{border-color:#ef4444;}
+.alert-stream { max-height:220px; overflow:hidden; }
+.alert-item { padding:8px; font-size:13px; margin-bottom:6px; border-left:4px solid; background:rgba(0,0,0,.05); animation:slide .4s ease; }
+.ok{border-color:#22c55e;} .warn{border-color:#fbbf24;} .crit{border-color:#ef4444;}
 @keyframes slide { from{opacity:0;transform:translateX(20px)} to{opacity:1} }
 
 .incident {
-  display:none; background:#7f1d1d; color:#fff;
-  padding:10px; text-align:center;
+  background:#7f1d1d; color:#fff; padding:10px;
+  text-align:center; display:none;
 }
 
-.toggle {
-  background:transparent; border:1px solid var(--border);
-  color:var(--text); padding:6px 12px; border-radius:6px;
-}
+.toggle { background:transparent; border:1px solid var(--border); color:var(--text); padding:6px 12px; border-radius:6px; }
 .toggle:hover { border-color:#3b82f6; color:#3b82f6; }
 
 .flow span {
   display:inline-block; padding:6px 10px; border-radius:6px;
   background:#1f2937; margin:4px;
 }
-.arrow { color:#6b7280; margin:0 6px; }
-.healthy { color:#22c55e; }
-.degraded { color:#fbbf24; }
+.flow .arrow { color:#6b7280; margin:0 6px; }
+.healthy { color:#22c55e; } .degraded { color:#fbbf24; }
 
-.code { font-family:monospace; color:#60a5fa; }
+.heat div {
+  width:100%; height:16px; margin-bottom:4px;
+}
 </style>
 </head>
 
 <body>
 
-<div id="incident" class="incident">
-🚨 INCIDENT: Queue consumer stalled – SRE investigating
-</div>
+<div id="incident" class="incident">🚨 INCIDENT: Queue consumer stalled – investigating</div>
 
 <nav class="navbar px-4 py-2">
   <span class="navbar-brand fw-semibold">AppOrbit – Production Monitoring</span>
   <div class="ms-auto d-flex gap-3 align-items-center">
     <span class="text-muted">ap-south-1 · prod</span>
-    <button class="toggle" onclick="toggleTheme()">Dark / Light</button>
+    <button class="toggle" onclick="document.body.classList.toggle('light')">Dark / Light</button>
   </div>
 </nav>
 
 <div class="container-fluid mt-4">
 
-<!-- CORE METRICS -->
+<!-- METRICS -->
 <div class="row g-4">
   <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU</div><div class="metric-value"><span id="cpuVal">45</span>%</div><div id="cpu" class="chart"></div></div></div>
   <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
   <div class="col-md-3"><div class="card p-3"><div class="metric-title">Requests</div><div class="metric-value"><span id="rpsVal">1240</span>/s</div><div id="rps" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Latency</div><div class="metric-value"><span id="latVal">118</span> ms</div><div id="latency" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Latency</div><div class="metric-value"><span id="latVal">118</span>ms</div><div id="latency" class="chart"></div></div></div>
 </div>
 
-<!-- PLATFORM -->
+<!-- K8S -->
 <div class="row g-4 mt-2">
   <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pods</div><div class="metric-value"><span id="pods">6</span> / 6</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Restarts (5m)</div><div class="metric-value" id="restarts">0</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">HPA Replicas</div><div class="metric-value" id="hpa">6</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Node Status</div><div class="metric-value" id="node">Normal</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Restarts</div><div class="metric-value" id="restarts">0</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">HPA</div><div class="metric-value" id="hpa">6</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Node</div><div class="metric-value" id="node">Normal</div></div></div>
 </div>
 
 <!-- SERVICE MAP -->
@@ -106,21 +96,15 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
   </div>
 </div>
 
-<!-- SLA / SLO -->
-<div class="row g-4 mt-2">
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">SLA Target</div><div class="metric-value">99.90%</div></div></div>
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Current SLO</div><div class="metric-value" id="slo">99.96%</div></div></div>
-  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Error Budget</div><div class="metric-value" id="budget">82%</div></div></div>
-</div>
-
 <!-- HEATMAP + COST -->
 <div class="row g-4 mt-2">
   <div class="col-md-6">
     <div class="card p-3">
       <h6 class="text-muted">Traffic Heatmap</h6>
-      <div id="heat"></div>
+      <div id="heat" class="heat"></div>
     </div>
   </div>
+
   <div class="col-md-6">
     <div class="card p-3">
       <h6 class="text-muted">Estimated Monthly Cost</h6>
@@ -142,6 +126,7 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
       Error Rate: <span id="errRate">0.8%</span>
     </div>
   </div>
+
   <div class="col-md-6">
     <div class="card p-3">
       <h6 class="text-muted">Live Alerts</h6>
@@ -188,7 +173,7 @@ setInterval(()=>{
 
   users.innerText=300+Math.round(Math.random()*100);
   sessions.innerText=800+Math.round(Math.random()*200);
-  errRate.innerText=(Math.random()).toFixed(2)+"%";
+  errRate.innerText=(Math.random()*1).toFixed(2)+"%";
 },4000);
 
 /* HEATMAP */
@@ -196,9 +181,8 @@ setInterval(()=>{
   heat.innerHTML="";
   for(let i=0;i<10;i++){
     const d=document.createElement("div");
-    d.style.height="16px";
-    d.style.marginBottom="4px";
-    d.style.background=`rgba(59,130,246,${Math.random()})`;
+    const v=Math.random();
+    d.style.background=`rgba(59,130,246,${v})`;
     heat.appendChild(d);
   }
 },5000);
@@ -229,8 +213,6 @@ setInterval(()=>{
   dt.innerText=d.toFixed(0);
   total.innerText=(e+lb+d).toFixed(0);
 },8000);
-
-function toggleTheme(){document.body.classList.toggle("light");}
 </script>
 
 </body>

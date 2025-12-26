@@ -2,94 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CloudWatch Console | Sandeep Balaveni</title>
+  <title>CloudWatch Dashboard | Sandeep</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <header class="topbar">
-  <div>
-    <h1>CloudWatch</h1>
-    <p>Deployed Cloud Projects</p>
-  </div>
-  <div class="env">
+  <h1>CloudWatch</h1>
+  <div class="meta">
     <span>Environment: <b>production</b></span>
     <span>Region: <b>ap-south-1</b></span>
   </div>
 </header>
 
-<section class="metrics-grid">
+<section class="widgets">
 
-  <div class="metric">
+  <div class="widget">
     <span>EC2 CPU Utilization</span>
-    <b id="cpu">42%</b>
+    <b id="cpuVal">42%</b>
+    <canvas id="cpuChart"></canvas>
   </div>
 
-  <div class="metric">
+  <div class="widget">
     <span>Memory Utilization</span>
-    <b id="memory">63%</b>
+    <b id="memVal">63%</b>
+    <canvas id="memChart"></canvas>
   </div>
 
-  <div class="metric">
-    <span>Disk Read/Write</span>
-    <b id="disk">128 MB/s</b>
+  <div class="widget">
+    <span>Disk Throughput</span>
+    <b id="diskVal">120 MB/s</b>
+    <canvas id="diskChart"></canvas>
   </div>
 
-  <div class="metric">
+  <div class="widget">
     <span>Network In</span>
-    <b id="netIn">22 Mbps</b>
-  </div>
-
-  <div class="metric">
-    <span>Network Out</span>
-    <b id="netOut">18 Mbps</b>
-  </div>
-
-  <div class="metric">
-    <span>Request Count</span>
-    <b id="req">1.2K</b>
-  </div>
-
-  <div class="metric">
-    <span>HTTP Error Rate</span>
-    <b id="error">0.02%</b>
-  </div>
-
-  <div class="metric">
-    <span>Average Latency</span>
-    <b id="latency">120 ms</b>
-  </div>
-
-</section>
-
-<section class="details">
-
-  <div class="panel">
-    <h3>Active Deployments</h3>
-    <ul>
-      <li>ScriptlyTech – Dockerized workloads on EC2</li>
-      <li>CodeHive – Static site via S3 + CloudFront</li>
-      <li>AppOrbit Labs – Containerized services with monitoring</li>
-    </ul>
-  </div>
-
-  <div class="panel terminal">
-<pre>
-$ aws cloudwatch describe-alarms
-✔ CPUHighUtilization
-✔ MemoryThreshold
-✔ ALB-5XX-Errors
-✔ HighLatencyAlert
-</pre>
-  </div>
-
-</section>
-
-<footer>
-  linkedin.com/in/sandeep-balaveni
-</footer>
-
-<script src="metrics.js"></script>
-</body>
-</html>

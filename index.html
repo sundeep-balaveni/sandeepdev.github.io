@@ -22,43 +22,33 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 .card { background:var(--card); border:1px solid var(--border); border-radius:10px; }
 .metric-title { font-size:13px; color:var(--muted); }
 .metric-value { font-size:22px; font-weight:600; }
-.chart { height:140px; }
+.chart { height:150px; }
 
-.alert-stream { max-height:220px; overflow:hidden; }
-.alert-item { padding:8px; font-size:13px; margin-bottom:6px; border-left:4px solid; background:rgba(0,0,0,.05); animation:slide .4s ease; }
+.alert-stream { max-height:280px; overflow:hidden; }
+.alert-item {
+  padding:10px; font-size:13px; margin-bottom:8px;
+  border-left:4px solid; animation:slideIn .4s ease;
+  background:rgba(0,0,0,.05);
+}
 .ok{border-color:#22c55e;} .warn{border-color:#fbbf24;} .crit{border-color:#ef4444;}
-@keyframes slide { from{opacity:0;transform:translateX(20px)} to{opacity:1} }
+@keyframes slideIn { from{opacity:0;transform:translateX(30px)} to{opacity:1} }
 
-.incident {
-  background:#7f1d1d; color:#fff; padding:10px;
-  text-align:center; display:none;
+.toggle {
+  background:transparent; border:1px solid var(--border);
+  color:var(--text); padding:6px 12px; border-radius:6px;
 }
-
-.toggle { background:transparent; border:1px solid var(--border); color:var(--text); padding:6px 12px; border-radius:6px; }
 .toggle:hover { border-color:#3b82f6; color:#3b82f6; }
-
-.flow span {
-  display:inline-block; padding:6px 10px; border-radius:6px;
-  background:#1f2937; margin:4px;
-}
-.flow .arrow { color:#6b7280; margin:0 6px; }
-.healthy { color:#22c55e; } .degraded { color:#fbbf24; }
-
-.heat div {
-  width:100%; height:16px; margin-bottom:4px;
-}
+.code { font-family:monospace; color:#60a5fa; }
 </style>
 </head>
 
 <body>
 
-<div id="incident" class="incident">🚨 INCIDENT: Queue consumer stalled – investigating</div>
-
 <nav class="navbar px-4 py-2">
   <span class="navbar-brand fw-semibold">AppOrbit – Production Monitoring</span>
   <div class="ms-auto d-flex gap-3 align-items-center">
     <span class="text-muted">ap-south-1 · prod</span>
-    <button class="toggle" onclick="document.body.classList.toggle('light')">Dark / Light</button>
+    <button class="toggle" onclick="toggleTheme()">Dark / Light</button>
   </div>
 </nav>
 
@@ -66,71 +56,43 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 
 <!-- METRICS -->
 <div class="row g-4">
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU</div><div class="metric-value"><span id="cpuVal">45</span>%</div><div id="cpu" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Requests</div><div class="metric-value"><span id="rpsVal">1240</span>/s</div><div id="rps" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Latency</div><div class="metric-value"><span id="latVal">118</span>ms</div><div id="latency" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU Utilization</div><div class="metric-value"><span id="cpuVal">45</span>%</div><div id="cpu" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory Utilization</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Request Rate</div><div class="metric-value"><span id="rpsVal">1240</span> rps</div><div id="rps" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Latency</div><div class="metric-value"><span id="latVal">118</span> ms</div><div id="latency" class="chart"></div></div></div>
 </div>
 
-<!-- K8S -->
+<div class="row g-4 mt-1">
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Network In</div><div class="metric-value"><span id="netVal">42</span> Mbps</div><div id="network" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Disk IOPS</div><div class="metric-value"><span id="diskVal">320</span></div><div id="disk" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Queue Depth</div><div class="metric-value"><span id="queueVal">38</span></div><div id="queue" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Cache Hit Ratio</div><div class="metric-value"><span id="cacheVal">94</span>%</div><div id="cache" class="chart"></div></div></div>
+</div>
+
+<!-- KUBERNETES -->
 <div class="row g-4 mt-2">
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pods</div><div class="metric-value"><span id="pods">6</span> / 6</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Restarts</div><div class="metric-value" id="restarts">0</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">HPA</div><div class="metric-value" id="hpa">6</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Node</div><div class="metric-value" id="node">Normal</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pods (Running / Desired)</div><div class="metric-value"><span id="podsRun">6</span> / <span id="podsDes">6</span></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pod Restarts (5m)</div><div class="metric-value" id="restarts">0</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">HPA Replicas</div><div class="metric-value" id="hpa">6</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Node Pressure</div><div class="metric-value" id="pressure">Normal</div></div></div>
 </div>
 
-<!-- SERVICE MAP -->
-<div class="row g-4 mt-2">
-  <div class="col-md-12">
-    <div class="card p-3">
-      <h6 class="text-muted">Service Dependency Map</h6>
-      <div class="flow">
-        <span class="healthy">Frontend</span><span class="arrow">→</span>
-        <span class="healthy">API</span><span class="arrow">→</span>
-        <span id="flowQueue" class="degraded">Queue</span><span class="arrow">→</span>
-        <span class="healthy">Database</span><span class="arrow">→</span>
-        <span class="healthy">Cache</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- HEATMAP + COST -->
+<!-- INFRA + ALERTS -->
 <div class="row g-4 mt-2">
   <div class="col-md-6">
     <div class="card p-3">
-      <h6 class="text-muted">Traffic Heatmap</h6>
-      <div id="heat" class="heat"></div>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="card p-3">
-      <h6 class="text-muted">Estimated Monthly Cost</h6>
-      EC2: $<span id="ec2">120</span><br>
-      Load Balancer: $<span id="lb">38</span><br>
-      Data Transfer: $<span id="dt">22</span><br>
-      <b>Total: $<span id="total">180</span></b>
-    </div>
-  </div>
-</div>
-
-<!-- USERS + ALERTS -->
-<div class="row g-4 mt-2">
-  <div class="col-md-6">
-    <div class="card p-3">
-      <h6 class="text-muted">User Analytics</h6>
-      Active Users: <span id="users">342</span><br>
-      Sessions: <span id="sessions">890</span><br>
-      Error Rate: <span id="errRate">0.8%</span>
+      <h6 class="text-muted">Infrastructure</h6>
+      Load Balancer: <span class="code">alb-apporbit-prod</span><br>
+      Public IP: <span class="code">13.234.xxx.xxx</span><br>
+      Queue: <span class="code">sqs-apporbit-events</span><br>
+      Image: <span class="code">apporbit-api:v1.4.2</span>
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="card p-3">
       <h6 class="text-muted">Live Alerts</h6>
-      <div id="alerts" class="alert-stream"></div>
+      <div class="alert-stream" id="alerts"></div>
     </div>
   </div>
 </div>
@@ -138,81 +100,83 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 </div>
 
 <script>
-function chart(id,color,bar=false){
-  const y=Array(30).fill(0);
-  Plotly.newPlot(id,[{y,type:bar?"bar":"scattergl",mode:"lines",line:{color,width:2}}],
+function line(id,color,fill=false){
+  const y=Array(40).fill(0);
+  Plotly.newPlot(id,[{y,type:"scattergl",mode:"lines",fill:fill?"tozeroy":null,line:{color,width:2}}],
   {margin:{l:20,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
   {displayModeBar:false});
   return y;
 }
-const cpu=chart("cpu","#60a5fa"), mem=chart("memory","#34c38f"),
-lat=chart("latency","#ff6b6b"), rps=chart("rps","#a084e8",true);
+function bar(id,color){
+  const y=Array(15).fill(0);
+  Plotly.newPlot(id,[{y,type:"bar",marker:{color}}],
+  {margin:{l:20,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
+  {displayModeBar:false});
+  return y;
+}
+
+const cpu=line("cpu","#60a5fa"), memory=line("memory","#34c38f",true),
+latency=line("latency","#ff6b6b"), cache=line("cache","#22c55e",true),
+queue=line("queue","#f59e0b"), rps=bar("rps","#a084e8"),
+network=bar("network","#38bdf8"), disk=bar("disk","#fbbf24");
 
 function slow(b,v,l){return l+(b+(Math.random()-.5)*v-l)*.05;}
 
 setInterval(()=>{
   cpu.push(slow(45,12,cpu.at(-1))); cpu.shift();
-  mem.push(slow(68,6,mem.at(-1))); mem.shift();
-  lat.push(slow(118,20,lat.at(-1))); lat.shift();
-  rps.push(900+Math.random()*600); rps.shift();
+  memory.push(slow(68,5,memory.at(-1))); memory.shift();
+  latency.push(slow(118,20,latency.at(-1))); latency.shift();
+  cache.push(slow(94,3,cache.at(-1))); cache.shift();
+  queue.push(slow(38,15,queue.at(-1))); queue.shift();
+
+  rps.push(1000+Math.random()*600); rps.shift();
+  network.push(30+Math.random()*40); network.shift();
+  disk.push(200+Math.random()*200); disk.shift();
 
   Plotly.update("cpu",{y:[cpu]});
-  Plotly.update("memory",{y:[mem]});
-  Plotly.update("latency",{y:[lat]});
+  Plotly.update("memory",{y:[memory]});
+  Plotly.update("latency",{y:[latency]});
+  Plotly.update("cache",{y:[cache]});
+  Plotly.update("queue",{y:[queue]});
   Plotly.update("rps",{y:[rps]});
+  Plotly.update("network",{y:[network]});
+  Plotly.update("disk",{y:[disk]});
 
   cpuVal.innerText=cpu.at(-1).toFixed(0);
-  memVal.innerText=mem.at(-1).toFixed(0);
-  latVal.innerText=lat.at(-1).toFixed(0);
+  memVal.innerText=memory.at(-1).toFixed(0);
   rpsVal.innerText=Math.round(rps.at(-1));
+  latVal.innerText=latency.at(-1).toFixed(0);
+  netVal.innerText=Math.round(network.at(-1));
+  diskVal.innerText=Math.round(disk.at(-1));
+  queueVal.innerText=queue.at(-1).toFixed(0);
+  cacheVal.innerText=cache.at(-1).toFixed(0);
 
-  pods.innerText=6+(Math.random()>.8?1:0);
-  restarts.innerText=Math.random()>.9?1:0;
-  hpa.innerText=pods.innerText;
-  node.innerText=Math.random()>.9?"MemoryPressure":"Normal";
-
-  users.innerText=300+Math.round(Math.random()*100);
-  sessions.innerText=800+Math.round(Math.random()*200);
-  errRate.innerText=(Math.random()*1).toFixed(2)+"%";
+  const d=6+(Math.random()>.8?1:0), r=d-(Math.random()>.9?1:0);
+  podsRun.innerText=r; podsDes.innerText=d; hpa.innerText=d;
+  restarts.innerText=Math.random()>.85?1:0;
+  pressure.innerText=Math.random()>.9?"MemoryPressure":"Normal";
 },4000);
 
-/* HEATMAP */
-setInterval(()=>{
-  heat.innerHTML="";
-  for(let i=0;i<10;i++){
-    const d=document.createElement("div");
-    const v=Math.random();
-    d.style.background=`rgba(59,130,246,${v})`;
-    heat.appendChild(d);
-  }
-},5000);
-
-/* ALERTS + INCIDENT */
-const msgs=[
-["ok","All services healthy"],
-["warn","Queue lag increasing"],
-["crit","Queue consumer stalled"],
-["warn","Latency spike detected"],
-["ok","Auto-scaling stable"]
+const alertsData=[
+["ok","All pods running within desired state"],
+["warn","Queue consumer lag detected"],
+["warn","Elevated memory usage on apporbit-api-2"],
+["crit","Pod restarted due to OOMKill"],
+["ok","Load balancer health checks passing"],
+["warn","HPA evaluating scale-out decision"],
+["ok","Deployment rollout progressing"]
 ];
+
 setInterval(()=>{
-  const [l,m]=msgs[Math.floor(Math.random()*msgs.length)];
+  const [l,m]=alertsData[Math.floor(Math.random()*alertsData.length)];
   const a=document.createElement("div");
   a.className=`alert-item ${l}`;
   a.innerText=new Date().toLocaleTimeString()+" — "+m;
   alerts.prepend(a);
-  if(alerts.children.length>5) alerts.removeChild(alerts.lastChild);
-  incident.style.display=l==="crit"?"block":"none";
+  if(alerts.children.length>6) alerts.removeChild(alerts.lastChild);
 },6000);
 
-/* COST */
-setInterval(()=>{
-  const e=110+Math.random()*30, lb=30+Math.random()*10, d=20+Math.random()*10;
-  ec2.innerText=e.toFixed(0);
-  lb.innerText=lb.toFixed(0);
-  dt.innerText=d.toFixed(0);
-  total.innerText=(e+lb+d).toFixed(0);
-},8000);
+function toggleTheme(){document.body.classList.toggle("light");}
 </script>
 
 </body>

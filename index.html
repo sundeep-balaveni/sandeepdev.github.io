@@ -71,4 +71,113 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 
 <!-- KUBERNETES -->
 <div class="row g-4 mt-2">
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pods (Running / Desired)</div><div class="metric-value"><span id="podsRun">6</span> / <span id="podsDes">6</span><
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pods (Running / Desired)</div><div class="metric-value"><span id="podsRun">6</span> / <span id="podsDes">6</span></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pod Restarts (5m)</div><div class="metric-value" id="restarts">0</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">HPA Replicas</div><div class="metric-value" id="hpa">6</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Node Pressure</div><div class="metric-value" id="pressure">Normal</div></div></div>
+</div>
+
+<!-- INFRA + ALERTS -->
+<div class="row g-4 mt-2">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="text-muted">Infrastructure</h6>
+      Load Balancer: <span class="code">alb-apporbit-prod</span><br>
+      Public IP: <span class="code">13.234.xxx.xxx</span><br>
+      Queue: <span class="code">sqs-apporbit-events</span><br>
+      Image: <span class="code">apporbit-api:v1.4.2</span>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="text-muted">Live Alerts</h6>
+      <div class="alert-stream" id="alerts"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function line(id,color,fill=false){
+  const y=Array(40).fill(0);
+  Plotly.newPlot(id,[{y,type:"scattergl",mode:"lines",fill:fill?"tozeroy":null,line:{color,width:2}}],
+  {margin:{l:20,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
+  {displayModeBar:false});
+  return y;
+}
+function bar(id,color){
+  const y=Array(15).fill(0);
+  Plotly.newPlot(id,[{y,type:"bar",marker:{color}}],
+  {margin:{l:20,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
+  {displayModeBar:false});
+  return y;
+}
+
+const cpu=line("cpu","#60a5fa"), memory=line("memory","#34c38f",true),
+latency=line("latency","#ff6b6b"), cache=line("cache","#22c55e",true),
+queue=line("queue","#f59e0b"), rps=bar("rps","#a084e8"),
+network=bar("network","#38bdf8"), disk=bar("disk","#fbbf24");
+
+function slow(b,v,l){return l+(b+(Math.random()-.5)*v-l)*.05;}
+
+setInterval(()=>{
+  cpu.push(slow(45,12,cpu.at(-1))); cpu.shift();
+  memory.push(slow(68,5,memory.at(-1))); memory.shift();
+  latency.push(slow(118,20,latency.at(-1))); latency.shift();
+  cache.push(slow(94,3,cache.at(-1))); cache.shift();
+  queue.push(slow(38,15,queue.at(-1))); queue.shift();
+
+  rps.push(1000+Math.random()*600); rps.shift();
+  network.push(30+Math.random()*40); network.shift();
+  disk.push(200+Math.random()*200); disk.shift();
+
+  Plotly.update("cpu",{y:[cpu]});
+  Plotly.update("memory",{y:[memory]});
+  Plotly.update("latency",{y:[latency]});
+  Plotly.update("cache",{y:[cache]});
+  Plotly.update("queue",{y:[queue]});
+  Plotly.update("rps",{y:[rps]});
+  Plotly.update("network",{y:[network]});
+  Plotly.update("disk",{y:[disk]});
+
+  cpuVal.innerText=cpu.at(-1).toFixed(0);
+  memVal.innerText=memory.at(-1).toFixed(0);
+  rpsVal.innerText=Math.round(rps.at(-1));
+  latVal.innerText=latency.at(-1).toFixed(0);
+  netVal.innerText=Math.round(network.at(-1));
+  diskVal.innerText=Math.round(disk.at(-1));
+  queueVal.innerText=queue.at(-1).toFixed(0);
+  cacheVal.innerText=cache.at(-1).toFixed(0);
+
+  const d=6+(Math.random()>.8?1:0), r=d-(Math.random()>.9?1:0);
+  podsRun.innerText=r; podsDes.innerText=d; hpa.innerText=d;
+  restarts.innerText=Math.random()>.85?1:0;
+  pressure.innerText=Math.random()>.9?"MemoryPressure":"Normal";
+},4000);
+
+const alertsData=[
+["ok","All pods running within desired state"],
+["warn","Queue consumer lag detected"],
+["warn","Elevated memory usage on apporbit-api-2"],
+["crit","Pod restarted due to OOMKill"],
+["ok","Load balancer health checks passing"],
+["warn","HPA evaluating scale-out decision"],
+["ok","Deployment rollout progressing"]
+];
+
+setInterval(()=>{
+  const [l,m]=alertsData[Math.floor(Math.random()*alertsData.length)];
+  const a=document.createElement("div");
+  a.className=`alert-item ${l}`;
+  a.innerText=new Date().toLocaleTimeString()+" — "+m;
+  alerts.prepend(a);
+  if(alerts.children.length>6) alerts.removeChild(alerts.lastChild);
+},6000);
+
+function toggleTheme(){document.body.classList.toggle("light");}
+</script>
+
+</body>
+</html>

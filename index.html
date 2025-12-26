@@ -2,105 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sandeep Balaveni | Cloud Engineer</title>
+  <title>Sandeep Balaveni | Cloud Engineer Console</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <h1>Sandeep Balaveni</h1>
-    <h2>Cloud Engineer</h2>
-    <p>
-      Designing, deploying, and automating scalable cloud infrastructure
-      using AWS, Docker, Kubernetes, Linux, and Ansible.
-    </p>
-    <div class="hero-links">
-      <a href="https://www.linkedin.com/in/sandeep-balaveni" target="_blank">LinkedIn</a>
-      <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+<header class="top-bar">
+  <span>☁ Cloud Engineer Control Panel</span>
+  <span class="status">STATUS: <b>ONLINE</b></span>
+</header>
+
+<div class="grid">
+
+  <!-- TERMINAL -->
+  <div class="panel terminal">
+    <div class="panel-title">terminal</div>
+    <pre>
+$ whoami
+sandeep-balaveni
+
+$ role
+cloud-engineer
+
+$ skills --list
+aws docker kubernetes linux ansible monitoring
+
+$ current_focus
+reliable • scalable • automated infrastructure
+    </pre>
+  </div>
+
+  <!-- SYSTEM STATUS -->
+  <div class="panel status-panel">
+    <div class="panel-title">system_status</div>
+    <ul>
+      <li>AWS ................. <span class="ok">OK</span></li>
+      <li>Docker .............. <span class="ok">OK</span></li>
+      <li>Kubernetes .......... <span class="ok">OK</span></li>
+      <li>Ansible ............. <span class="ok">OK</span></li>
+      <li>Monitoring .......... <span class="ok">ACTIVE</span></li>
+    </ul>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="panel experience">
+    <div class="panel-title">deployments_2024</div>
+    <p><b>ScriptlyTech</b> — ST-CLD-0424-UW</p>
+    <ul>
+      <li>Dockerized production workloads</li>
+      <li>Ansible-based server automation</li>
+      <li>AWS CloudWatch alerts & metrics</li>
+    </ul>
+
+    <p><b>CodeHive Solutions</b> — UPW-INF-2024-02-CH</p>
+    <ul>
+      <li>S3 static website hosting</li>
+      <li>Linux performance tuning</li>
+    </ul>
+
+    <p><b>AppOrbit Labs</b> — Sep 2024</p>
+    <ul>
+      <li>Optimized container orchestration</li>
+      <li>Reusable Ansible playbooks</li>
+      <li>Proactive monitoring</li>
+    </ul>
+  </div>
+
+  <!-- METRICS -->
+  <div class="panel metrics">
+    <div class="panel-title">metrics</div>
+    <div class="metric">
+      <span>uptime</span><b>99.98%</b>
+    </div>
+    <div class="metric">
+      <span>alerts_handled</span><b>120+</b>
+    </div>
+    <div class="metric">
+      <span>deployments</span><b>40+</b>
     </div>
   </div>
+
+</div>
+
+<!-- PUBLICATION -->
+<section class="publication">
+  <h3>research_publication</h3>
+  <p>DOI: <a href="https://doi.org/10.5281/zenodo.18058506" target="_blank">
+    10.5281/zenodo.18058506
+  </a></p>
 </section>
 
-<!-- ABOUT -->
-<section class="section">
-  <h3>About Me</h3>
-  <p class="about-text">
-    I am passionate about cloud deployments and infrastructure automation,
-    leveraging hands-on experience with containerization, orchestration,
-    configuration management, and cloud monitoring to build reliable and
-    scalable systems.
-  </p>
-</section>
-
-<!-- SKILLS -->
-<section class="section">
-  <h3>Core Skills</h3>
-  <div class="skills-grid">
-    <div class="skill-card">AWS<br><span>EC2 · S3 · IAM · CloudWatch</span></div>
-    <div class="skill-card">Docker<br><span>Images · Volumes · Networking</span></div>
-    <div class="skill-card">Kubernetes<br><span>Deployments · Services</span></div>
-    <div class="skill-card">Ansible<br><span>Playbooks · Automation</span></div>
-    <div class="skill-card">Linux<br><span>Server Ops · Troubleshooting</span></div>
-    <div class="skill-card">Monitoring<br><span>Metrics · Alerts</span></div>
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section class="section">
-  <h3>Freelance Cloud Experience – 2024</h3>
-
-  <div class="timeline">
-    <div class="timeline-item">
-      <h4>ScriptlyTech</h4>
-      <span>ST-CLD-0424-UW</span>
-      <ul>
-        <li>Dockerized applications for dev & prod environments</li>
-        <li>Automated Linux provisioning using Ansible</li>
-        <li>Configured AWS CloudWatch monitoring & alerts</li>
-      </ul>
-    </div>
-
-    <div class="timeline-item">
-      <h4>CodeHive Solutions</h4>
-      <span>UPW-INF-2024-02-CH</span>
-      <ul>
-        <li>AWS S3 static website deployments</li>
-        <li>Linux troubleshooting and performance tuning</li>
-      </ul>
-    </div>
-
-    <div class="timeline-item">
-      <h4>AppOrbit Labs</h4>
-      <span>UPW-CLDS-2024-03-AO · Sep 2024</span>
-      <ul>
-        <li>Optimized Docker container orchestration workflows</li>
-        <li>Built reusable Ansible playbooks</li>
-        <li>Implemented proactive CloudWatch alerts</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- RESEARCH -->
-<section class="section highlight">
-  <h3>Research & Publication</h3>
-  <p>
-    Published a research paper on cloud infrastructure systems.
-  </p>
-  <a href="https://doi.org/10.5281/zenodo.18058506" target="_blank" class="doi">
-    DOI: 10.5281/zenodo.18058506
-  </a>
-</section>
-
-<!-- FOOTER -->
 <footer>
-  <p>© 2025 Sandeep Balaveni · Cloud Engineer</p>
+  linkedin.com/in/sandeep-balaveni
 </footer>
 
 </body>

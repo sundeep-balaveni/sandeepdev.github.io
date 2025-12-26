@@ -2,40 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CloudWatch Dashboard | Sandeep</title>
+  <title>Cloud Engineer Portfolio | Sandeep Balaveni</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <header class="topbar">
-  <h1>CloudWatch</h1>
+  <div>
+    <h1>CloudWatch Dashboard</h1>
+    <p>Production Systems – Portfolio Snapshot</p>
+  </div>
   <div class="meta">
-    <span>Environment: <b>production</b></span>
-    <span>Region: <b>ap-south-1</b></span>
+    Region: ap-south-1 · Environment: production
   </div>
 </header>
 
 <section class="widgets">
 
+  <!-- CPU -->
   <div class="widget">
     <span>EC2 CPU Utilization</span>
-    <b id="cpuVal">42%</b>
-    <canvas id="cpuChart"></canvas>
+    <b>42%</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,20 10,18 20,15 30,14 40,12 50,15 60,14 70,13 80,12 90,14 100,13"/>
+    </svg>
   </div>
 
+  <!-- Memory -->
   <div class="widget">
     <span>Memory Utilization</span>
-    <b id="memVal">63%</b>
-    <canvas id="memChart"></canvas>
+    <b>68%</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,22 20,20 40,18 60,17 80,16 100,15"/>
+    </svg>
   </div>
 
+  <!-- Disk -->
   <div class="widget">
     <span>Disk Throughput</span>
-    <b id="diskVal">120 MB/s</b>
-    <canvas id="diskChart"></canvas>
+    <b>140 MB/s</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,25 10,10 20,22 30,8 40,20 50,12 60,18 70,9 80,15 90,10"/>
+    </svg>
   </div>
 
+  <!-- Network In -->
   <div class="widget">
     <span>Network In</span>
+    <b>24 Mbps</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,20 15,18 30,22 45,15 60,18 75,14 90,16"/>
+    </svg>
+  </div>
+
+  <!-- Network Out -->
+  <div class="widget">
+    <span>Network Out</span>
+    <b>19 Mbps</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,18 20,16 40,14 60,15 80,13 100,14"/>
+    </svg>
+  </div>
+
+  <!-- Request Count -->
+  <div class="widget">
+    <span>Request Count</span>
+    <b>1.3K</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,25 20,18 40,10 60,12 80,8 100,10"/>
+    </svg>
+  </div>
+
+  <!-- Error Rate -->
+  <div class="widget">
+    <span>HTTP 5xx Errors</span>
+    <b>0.02%</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,28 50,28 100,28"/>
+    </svg>
+  </div>
+
+  <!-- Latency -->
+  <div class="widget">
+    <span>Avg Latency</span>
+    <b>120 ms</b>
+    <svg viewBox="0 0 100 30">
+      <polyline points="0,20 25,18 50,17 75,16 100,15"/>
+    </svg>
+  </div>
+
+</section>
+
+<footer>
+  Metrics represent deployed workloads handled during freelance cloud projects (2024)
+</footer>
+
+</body>
+</html>

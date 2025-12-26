@@ -2,84 +2,94 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cloud Engineer Console | Sandeep</title>
+  <title>CloudWatch Console | Sandeep Balaveni</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <header class="topbar">
-  <h1>☁ Cloud Engineer Console</h1>
-  <span class="live">● LIVE</span>
+  <div>
+    <h1>CloudWatch</h1>
+    <p>Deployed Cloud Projects</p>
+  </div>
+  <div class="env">
+    <span>Environment: <b>production</b></span>
+    <span>Region: <b>ap-south-1</b></span>
+  </div>
 </header>
 
-<!-- METRIC TILES -->
-<section class="tiles">
-  <div class="tile cpu">CPU<br><b id="cpuVal">42%</b></div>
-  <div class="tile mem">Memory<br><b id="memVal">63%</b></div>
-  <div class="tile net">Network<br><b id="netVal">18 Mbps</b></div>
+<section class="metrics-grid">
+
+  <div class="metric">
+    <span>EC2 CPU Utilization</span>
+    <b id="cpu">42%</b>
+  </div>
+
+  <div class="metric">
+    <span>Memory Utilization</span>
+    <b id="memory">63%</b>
+  </div>
+
+  <div class="metric">
+    <span>Disk Read/Write</span>
+    <b id="disk">128 MB/s</b>
+  </div>
+
+  <div class="metric">
+    <span>Network In</span>
+    <b id="netIn">22 Mbps</b>
+  </div>
+
+  <div class="metric">
+    <span>Network Out</span>
+    <b id="netOut">18 Mbps</b>
+  </div>
+
+  <div class="metric">
+    <span>Request Count</span>
+    <b id="req">1.2K</b>
+  </div>
+
+  <div class="metric">
+    <span>HTTP Error Rate</span>
+    <b id="error">0.02%</b>
+  </div>
+
+  <div class="metric">
+    <span>Average Latency</span>
+    <b id="latency">120 ms</b>
+  </div>
+
 </section>
 
-<!-- MAIN GRID -->
-<section class="grid">
+<section class="details">
 
-  <!-- TERMINAL -->
-  <div class="panel terminal">
-    <div class="panel-title">terminal</div>
-<pre>
-$ whoami
-sandeep-balaveni
-
-$ role
-cloud-engineer
-
-$ uptime
-99.98%
-
-$ active_projects
-scriptlytech | codehive | apporbit
-</pre>
-  </div>
-
-  <!-- CPU CHART -->
   <div class="panel">
-    <div class="panel-title">CPU Usage</div>
-    <canvas id="cpuChart"></canvas>
-  </div>
-
-  <!-- EXPERIENCE -->
-  <div class="panel">
-    <div class="panel-title">Deployments (2024)</div>
+    <h3>Active Deployments</h3>
     <ul>
-      <li><b>ScriptlyTech</b> — Docker, Ansible, CloudWatch</li>
-      <li><b>CodeHive</b> — AWS S3, Linux Ops</li>
-      <li><b>AppOrbit Labs</b> — Container Optimization</li>
+      <li>ScriptlyTech – Dockerized workloads on EC2</li>
+      <li>CodeHive – Static site via S3 + CloudFront</li>
+      <li>AppOrbit Labs – Containerized services with monitoring</li>
     </ul>
   </div>
 
-  <!-- MEMORY CHART -->
-  <div class="panel">
-    <div class="panel-title">Memory Usage</div>
-    <canvas id="memChart"></canvas>
+  <div class="panel terminal">
+<pre>
+$ aws cloudwatch describe-alarms
+✔ CPUHighUtilization
+✔ MemoryThreshold
+✔ ALB-5XX-Errors
+✔ HighLatencyAlert
+</pre>
   </div>
 
-</section>
-
-<!-- RESEARCH -->
-<section class="panel research">
-  <div class="panel-title">Research Publication</div>
-  DOI:
-  <a href="https://doi.org/10.5281/zenodo.18058506" target="_blank">
-    10.5281/zenodo.18058506
-  </a>
 </section>
 
 <footer>
   linkedin.com/in/sandeep-balaveni
 </footer>
 
-<script src="charts.js"></script>
 <script src="metrics.js"></script>
 </body>
 </html>

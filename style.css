@@ -1,82 +1,86 @@
 body {
   margin: 0;
-  background: #0b1220;
-  color: #e5e7eb;
   font-family: "Segoe UI", system-ui;
+  background: #f4f6f9;
+  color: #111827;
 }
 
 /* TOP BAR */
 .topbar {
+  background: #0f172a;
+  color: white;
+  padding: 20px 30px;
   display: flex;
   justify-content: space-between;
-  padding: 18px 30px;
-  background: #020617;
-  border-bottom: 1px solid #1e293b;
+  align-items: center;
 }
 
-.live {
-  color: #22c55e;
-  font-weight: bold;
+.topbar p {
+  color: #cbd5e1;
+  margin-top: 4px;
 }
 
-/* METRIC TILES */
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding: 20px 30px;
-}
-
-.tile {
-  padding: 20px;
-  border-radius: 12px;
+.env span {
+  margin-left: 20px;
   font-size: 0.9rem;
 }
 
-.tile b {
-  font-size: 1.6rem;
-}
-
-.cpu { background: linear-gradient(135deg, #ef4444, #7f1d1d); }
-.mem { background: linear-gradient(135deg, #22c55e, #064e3b); }
-.net { background: linear-gradient(135deg, #8b5cf6, #312e81); }
-
-/* GRID */
-.grid {
+/* METRICS GRID */
+.metrics-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 25px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
   padding: 30px;
 }
 
+.metric {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.metric span {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.metric b {
+  display: block;
+  font-size: 1.6rem;
+  margin-top: 8px;
+  color: #0f172a;
+}
+
+/* DETAILS */
+.details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 0 30px 30px;
+}
+
 .panel {
-  background: #020617;
-  border: 1px solid #1e293b;
-  border-radius: 14px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   padding: 20px;
 }
 
-.panel-title {
-  color: #38bdf8;
-  font-size: 0.9rem;
-  margin-bottom: 12px;
+.panel h3 {
+  margin-bottom: 10px;
 }
 
-/* TERMINAL */
 .terminal pre {
   background: #020617;
   color: #22c55e;
-  font-family: monospace;
+  padding: 15px;
+  border-radius: 6px;
   font-size: 0.85rem;
-}
-
-/* RESEARCH */
-.research {
-  margin: 30px;
 }
 
 footer {
   text-align: center;
-  padding: 30px;
-  color: #64748b;
+  padding: 20px;
+  color: #6b7280;
 }

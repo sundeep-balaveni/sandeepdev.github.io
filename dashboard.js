@@ -1,39 +1,34 @@
-const METRICS = {
-  cpu: { base: 45, variance: 5, color: "#60a5fa" },
-  memory: { base: 65, variance: 3, color: "#34d399" },
-  disk: { base: 120, variance: 20, color: "#fbbf24" },
-  netin: { base: 25, variance: 8, color: "#38bdf8" },
-  netout: { base: 20, variance: 6, color: "#22d3ee" },
-  requests: { base: 1400, variance: 200, color: "#a78bfa" },
-  errors: { base: 1, variance: 0.4, color: "#f87171" },
-  latency: { base: 120, variance: 15, color: "#fb7185" }
+const CONFIG = {
+  cpu:      { base: 45, variance: 6, color: "#4f8df5" },
+  memory:   { base: 65, variance: 3, color: "#34c38f" },
+  disk:     { base: 120, variance: 25, color: "#f1b44c" },
+  netin:    { base: 30, variance: 10, color: "#50a5f1" },
+  netout:   { base: 25, variance: 8, color: "#2ab57d" },
+  requests: { base: 1400, variance: 300, color: "#a084e8" },
+  errors:   { base: 1.5, variance: 0.6, color: "#f46a6a" },
+  latency:  { base: 120, variance: 20, color: "#ff6b6b" }
 };
 
-const WINDOW = 60; // time points
+const POINTS = 120; // last 2 minutes
 const state = {};
 
-// Smooth generator
-function smooth(prev, base, variance) {
-  const target = base + (Math.random() - 0.5) * variance;
+function smooth(prev, target) {
   return prev + (target - prev) * 0.08;
 }
 
-// Init metric
-function initMetric(id, cfg) {
-  const y = Array.from({ length: WINDOW }, () => cfg.base);
-  const x = [...Array(WINDOW).keys()];
+function initChart(id, cfg) {
+  const x = [...Array(POINTS).keys()];
+  const y = Array.from({ length: POINTS }, () => cfg.base);
 
   Plotly.newPlot(id, [{
-    x, y,
+    x,
+    y,
     type: "scattergl",
     mode: "lines",
-    line: {
-      color: cfg.color,
-      width: 3,
-      shape: "spline"
-    }
+    fill: "tozeroy",
+    line: { color: cfg.color, width: 2 }
   }], {
-    margin: { l: 0, r: 0, t: 0, b: 0 },
+    margin: { l: 30, r: 10, t: 10, b: 20 },
     paper_bgcolor: "transparent",
     plot_bgcolor: "transparent",
     xaxis: { visible: false },
@@ -43,25 +38,27 @@ function initMetric(id, cfg) {
   state[id] = { x, y, cfg };
 }
 
-// Initialize all metrics
-Object.keys(METRICS).forEach(id => initMetric(id, METRICS[id]));
+Object.keys(CONFIG).forEach(id => initChart(id, CONFIG[id]));
 
-// REAL-TIME LOOP (60 FPS)
-function tick() {
+function animate() {
   Object.keys(state).forEach(id => {
     const m = state[id];
+    const last = m.y[m.y.length - 1];
+    const target =
+      m.cfg.base + (Math.random() - 0.5) * m.cfg.variance;
+
     m.y.shift();
-    m.y.push(smooth(m.y[m.y.length - 1], m.cfg.base, m.cfg.variance));
+    m.y.push(smooth(last, target));
 
     Plotly.update(id, { y: [m.y] });
   });
 
-  requestAnimationFrame(tick);
+  requestAnimationFrame(animate);
 }
 
-tick(); // START animation
+animate();
 
-// Theme toggle
+// Theme toggle stays
 document.getElementById("themeToggle").onclick = () => {
   document.body.dataset.theme =
     document.body.dataset.theme === "dark" ? "light" : "dark";

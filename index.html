@@ -61,6 +61,11 @@ button.toggle:hover {
   border-color:#3b82f6;
   color:#3b82f6;
 }
+
+.code {
+  font-family:monospace;
+  color:#60a5fa;
+}
 </style>
 </head>
 
@@ -70,7 +75,7 @@ button.toggle:hover {
 <nav class="navbar px-4 py-2">
   <span class="navbar-brand fw-semibold">AppOrbit – Test@v1.09</span>
   <div class="ms-auto d-flex gap-3 align-items-center">
-    <span class="text-muted">us-east-1a ·Test@v1.09</span>
+    <span class="text-muted">us-east-1a · Test@v1.09</span>
     <button class="toggle" onclick="toggleTheme()">Dark / Light</button>
   </div>
 </nav>
@@ -140,11 +145,26 @@ button.toggle:hover {
 
 <div class="col-md-6">
 <div class="card p-3">
-<h6 class="text-muted">Infrastructure</h6>
-Load Balancer: alb-apporbit-prod<br>
-Public IP: 13.234.xxx.xxx<br>
-Pods Running: <span id="pods">6</span><br>
-Message Queue: SQS-prod-events
+<h6 class="text-muted">Infrastructure Overview</h6>
+
+<b>Environment:</b> Production (Test@v1.09)<br>
+<b>AWS Account:</b> 123456789012<br>
+<b>Region / AZ:</b> us-east-1 / us-east-1a<br><br>
+
+<b>EKS Cluster:</b> <span class="code">apporbit-eks-prod</span><br>
+<b>Namespace:</b> <span class="code">apporbit-api</span><br>
+<b>Nodes:</b> 3 × t3.large<br>
+<b>Auto Scaling Group:</b> apporbit-node-asg<br><br>
+
+<b>Pods Running:</b> <span id="pods">6</span><br>
+<b>Deployment:</b> apporbit-api<br>
+<b>Image:</b> <span class="code">apporbit-api:v1.09</span><br><br>
+
+<b>Load Balancer:</b> alb-apporbit-prod<br>
+<b>Public Endpoint:</b> api.apporbit.internal<br>
+<b>Message Queue:</b> SQS-prod-events<br>
+<b>Uptime:</b> 99.98% (last 30 days)
+
 </div>
 </div>
 

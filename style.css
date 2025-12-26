@@ -8,15 +8,13 @@ body {
 .topbar {
   background: #0f172a;
   color: white;
-  padding: 18px 30px;
+  padding: 20px 30px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
-.meta span {
-  margin-left: 20px;
-  font-size: 0.9rem;
+.topbar p {
+  color: #cbd5e1;
 }
 
 .widgets {
@@ -44,6 +42,19 @@ body {
   margin: 6px 0;
 }
 
-canvas {
-  height: 60px !important;
+svg {
+  width: 100%;
+  height: 40px;
+}
+
+polyline {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 2;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
 }

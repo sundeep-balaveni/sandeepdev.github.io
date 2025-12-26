@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AppOrbit | Production Test_v1_04</title>
+<title>AppOrbit | Production Monitoring</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,21 +22,22 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 .card { background:var(--card); border:1px solid var(--border); border-radius:10px; }
 .metric-title { font-size:13px; color:var(--muted); }
 .metric-value { font-size:22px; font-weight:600; }
-.chart { height:150px; }
+.chart { height:140px; }
 
-.alert-stream { max-height:260px; overflow:hidden; }
+.alert-stream { max-height:240px; overflow:hidden; }
 .alert-item {
-  padding:10px; font-size:13px; margin-bottom:8px;
+  padding:8px; font-size:13px; margin-bottom:6px;
   border-left:4px solid; background:rgba(0,0,0,.05);
-  animation:slideIn .4s ease;
+  animation:slide .4s ease;
 }
 .ok{border-color:#22c55e;}
 .warn{border-color:#fbbf24;}
 .crit{border-color:#ef4444;}
+@keyframes slide { from{opacity:0;transform:translateX(20px)} to{opacity:1} }
 
-@keyframes slideIn {
-  from{opacity:0;transform:translateX(30px)}
-  to{opacity:1}
+.incident {
+  display:none; background:#7f1d1d; color:#fff;
+  padding:10px; text-align:center;
 }
 
 .toggle {
@@ -45,156 +46,189 @@ body { background:var(--bg); color:var(--text); font-family:system-ui; }
 }
 .toggle:hover { border-color:#3b82f6; color:#3b82f6; }
 
-.code { font-family:monospace; color:#60a5fa; }
+.flow span {
+  display:inline-block; padding:6px 10px; border-radius:6px;
+  background:#1f2937; margin:4px;
+}
+.arrow { color:#6b7280; margin:0 6px; }
+.healthy { color:#22c55e; }
+.degraded { color:#fbbf24; }
 
-.log-box { font-family:monospace; font-size:12px; height:180px; overflow:hidden; }
-.heat div { height:14px; margin-bottom:4px; }
+.code { font-family:monospace; color:#60a5fa; }
 </style>
 </head>
 
 <body>
 
+<div id="incident" class="incident">
+🚨 INCIDENT: Queue consumer stalled – SRE investigating
+</div>
+
 <nav class="navbar px-4 py-2">
-  <span class="navbar-brand fw-semibold">AppOrbit – Test_v1_04</span>
+  <span class="navbar-brand fw-semibold">AppOrbit – Production Monitoring</span>
   <div class="ms-auto d-flex gap-3 align-items-center">
-    <span class="text-muted">ap-south-1 · Test</span>
+    <span class="text-muted">ap-south-1 · prod</span>
     <button class="toggle" onclick="toggleTheme()">Dark / Light</button>
   </div>
 </nav>
 
 <div class="container-fluid mt-4">
 
-<!-- ================= CORE METRICS ================= -->
+<!-- CORE METRICS -->
 <div class="row g-4">
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU Utilization</div><div class="metric-value"><span id="cpuVal">45</span>%</div><div id="cpu" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory Utilization</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Request Rate</div><div class="metric-value"><span id="rpsVal">1240</span> rps</div><div id="rps" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">CPU</div><div class="metric-value"><span id="cpuVal">45</span>%</div><div id="cpu" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Memory</div><div class="metric-value"><span id="memVal">68</span>%</div><div id="memory" class="chart"></div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Requests</div><div class="metric-value"><span id="rpsVal">1240</span>/s</div><div id="rps" class="chart"></div></div></div>
   <div class="col-md-3"><div class="card p-3"><div class="metric-title">Latency</div><div class="metric-value"><span id="latVal">118</span> ms</div><div id="latency" class="chart"></div></div></div>
 </div>
 
-<!-- ================= NEW GRAPHS ================= -->
-<div class="row g-4 mt-3">
-
-  <div class="col-md-4">
-    <div class="card p-3">
-      <div class="metric-title">Load Balancer Target Response Time</div>
-      <div id="lbLatency" class="chart"></div>
-    </div>
-  </div>
-
-  <div class="col-md-4">
-    <div class="card p-3">
-      <div class="metric-title">HTTP Status Codes</div>
-      <div id="httpCodes" class="chart"></div>
-    </div>
-  </div>
-
-  <div class="col-md-4">
-    <div class="card p-3">
-      <div class="metric-title">Database Connections</div>
-      <div id="dbConn" class="chart"></div>
-    </div>
-  </div>
-
+<!-- PLATFORM -->
+<div class="row g-4 mt-2">
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Pods</div><div class="metric-value"><span id="pods">6</span> / 6</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Restarts (5m)</div><div class="metric-value" id="restarts">0</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">HPA Replicas</div><div class="metric-value" id="hpa">6</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="metric-title">Node Status</div><div class="metric-value" id="node">Normal</div></div></div>
 </div>
 
+<!-- SERVICE MAP -->
 <div class="row g-4 mt-2">
-
-  <div class="col-md-6">
+  <div class="col-md-12">
     <div class="card p-3">
-      <div class="metric-title">Pod CPU Usage by Replica</div>
-      <div id="podCpu" class="chart"></div>
+      <h6 class="text-muted">Service Dependency Map</h6>
+      <div class="flow">
+        <span class="healthy">Frontend</span><span class="arrow">→</span>
+        <span class="healthy">API</span><span class="arrow">→</span>
+        <span id="flowQueue" class="degraded">Queue</span><span class="arrow">→</span>
+        <span class="healthy">Database</span><span class="arrow">→</span>
+        <span class="healthy">Cache</span>
+      </div>
     </div>
   </div>
+</div>
 
+<!-- SLA / SLO -->
+<div class="row g-4 mt-2">
+  <div class="col-md-4"><div class="card p-3"><div class="metric-title">SLA Target</div><div class="metric-value">99.90%</div></div></div>
+  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Current SLO</div><div class="metric-value" id="slo">99.96%</div></div></div>
+  <div class="col-md-4"><div class="card p-3"><div class="metric-title">Error Budget</div><div class="metric-value" id="budget">82%</div></div></div>
+</div>
+
+<!-- HEATMAP + COST -->
+<div class="row g-4 mt-2">
   <div class="col-md-6">
     <div class="card p-3">
-      <div class="metric-title">Queue Processing Rate</div>
-      <div id="queueRate" class="chart"></div>
+      <h6 class="text-muted">Traffic Heatmap</h6>
+      <div id="heat"></div>
     </div>
   </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="text-muted">Estimated Monthly Cost</h6>
+      EC2: $<span id="ec2">120</span><br>
+      Load Balancer: $<span id="lb">38</span><br>
+      Data Transfer: $<span id="dt">22</span><br>
+      <b>Total: $<span id="total">180</span></b>
+    </div>
+  </div>
+</div>
 
+<!-- USERS + ALERTS -->
+<div class="row g-4 mt-2">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="text-muted">User Analytics</h6>
+      Active Users: <span id="users">342</span><br>
+      Sessions: <span id="sessions">890</span><br>
+      Error Rate: <span id="errRate">0.8%</span>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="text-muted">Live Alerts</h6>
+      <div id="alerts" class="alert-stream"></div>
+    </div>
+  </div>
 </div>
 
 </div>
 
 <script>
-/* ---------- GRAPH HELPERS ---------- */
-function line(id,color,fill=false){
-  const y=Array(40).fill(0);
-  Plotly.newPlot(id,[{y,type:"scattergl",mode:"lines",fill:fill?"tozeroy":null,line:{color,width:2}}],
-  {margin:{l:30,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
+function chart(id,color,bar=false){
+  const y=Array(30).fill(0);
+  Plotly.newPlot(id,[{y,type:bar?"bar":"scattergl",mode:"lines",line:{color,width:2}}],
+  {margin:{l:20,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
   {displayModeBar:false});
   return y;
 }
-
-function bar(id,color){
-  const y=Array(20).fill(0);
-  Plotly.newPlot(id,[{y,type:"bar",marker:{color}}],
-  {margin:{l:30,r:10,t:10,b:20},paper_bgcolor:"transparent",plot_bgcolor:"transparent",xaxis:{visible:false},yaxis:{visible:false}},
-  {displayModeBar:false});
-  return y;
-}
-
-/* ---------- EXISTING ---------- */
-const cpu=line("cpu","#60a5fa"),
-memory=line("memory","#34c38f",true),
-latency=line("latency","#ff6b6b"),
-rps=bar("rps","#a084e8");
-
-/* ---------- NEW ---------- */
-const lbLatency=line("lbLatency","#38bdf8");
-const dbConnections=line("dbConn","#22c55e");
-const queueRate=bar("queueRate","#f59e0b");
-
-Plotly.newPlot("httpCodes",[
-  {y:[90],type:"bar",name:"2xx",marker:{color:"#22c55e"}},
-  {y:[6],type:"bar",name:"4xx",marker:{color:"#fbbf24"}},
-  {y:[1],type:"bar",name:"5xx",marker:{color:"#ef4444"}}
-],{
-  barmode:"stack",
-  margin:{l:30,r:10,t:10,b:20},
-  paper_bgcolor:"transparent",
-  plot_bgcolor:"transparent",
-  xaxis:{visible:false},
-  yaxis:{visible:false}
-},{displayModeBar:false});
-
-Plotly.newPlot("podCpu",[
-  {y:[30],type:"scattergl",mode:"lines",line:{color:"#60a5fa"}},
-  {y:[35],type:"scattergl",mode:"lines",line:{color:"#34c38f"}},
-  {y:[28],type:"scattergl",mode:"lines",line:{color:"#fbbf24"}}
-],{
-  margin:{l:30,r:10,t:10,b:20},
-  paper_bgcolor:"transparent",
-  plot_bgcolor:"transparent",
-  xaxis:{visible:false},
-  yaxis:{visible:false}
-},{displayModeBar:false});
+const cpu=chart("cpu","#60a5fa"), mem=chart("memory","#34c38f"),
+lat=chart("latency","#ff6b6b"), rps=chart("rps","#a084e8",true);
 
 function slow(b,v,l){return l+(b+(Math.random()-.5)*v-l)*.05;}
 
 setInterval(()=>{
   cpu.push(slow(45,12,cpu.at(-1))); cpu.shift();
-  memory.push(slow(68,6,memory.at(-1))); memory.shift();
-  latency.push(slow(118,20,latency.at(-1))); latency.shift();
+  mem.push(slow(68,6,mem.at(-1))); mem.shift();
+  lat.push(slow(118,20,lat.at(-1))); lat.shift();
   rps.push(900+Math.random()*600); rps.shift();
 
-  lbLatency.push(slow(110,25,lbLatency.at(-1))); lbLatency.shift();
-  dbConnections.push(slow(30,8,dbConnections.at(-1))); dbConnections.shift();
-  queueRate.push(400+Math.random()*200); queueRate.shift();
-
   Plotly.update("cpu",{y:[cpu]});
-  Plotly.update("memory",{y:[memory]});
-  Plotly.update("latency",{y:[latency]});
+  Plotly.update("memory",{y:[mem]});
+  Plotly.update("latency",{y:[lat]});
   Plotly.update("rps",{y:[rps]});
-  Plotly.update("lbLatency",{y:[lbLatency]});
-  Plotly.update("dbConn",{y:[dbConnections]});
-  Plotly.update("queueRate",{y:[queueRate]});
 
-  Plotly.update("httpCodes",{y:[[90],[6],[Math.random()*2]]});
+  cpuVal.innerText=cpu.at(-1).toFixed(0);
+  memVal.innerText=mem.at(-1).toFixed(0);
+  latVal.innerText=lat.at(-1).toFixed(0);
+  rpsVal.innerText=Math.round(rps.at(-1));
 
+  pods.innerText=6+(Math.random()>.8?1:0);
+  restarts.innerText=Math.random()>.9?1:0;
+  hpa.innerText=pods.innerText;
+  node.innerText=Math.random()>.9?"MemoryPressure":"Normal";
+
+  users.innerText=300+Math.round(Math.random()*100);
+  sessions.innerText=800+Math.round(Math.random()*200);
+  errRate.innerText=(Math.random()).toFixed(2)+"%";
 },4000);
+
+/* HEATMAP */
+setInterval(()=>{
+  heat.innerHTML="";
+  for(let i=0;i<10;i++){
+    const d=document.createElement("div");
+    d.style.height="16px";
+    d.style.marginBottom="4px";
+    d.style.background=`rgba(59,130,246,${Math.random()})`;
+    heat.appendChild(d);
+  }
+},5000);
+
+/* ALERTS + INCIDENT */
+const msgs=[
+["ok","All services healthy"],
+["warn","Queue lag increasing"],
+["crit","Queue consumer stalled"],
+["warn","Latency spike detected"],
+["ok","Auto-scaling stable"]
+];
+setInterval(()=>{
+  const [l,m]=msgs[Math.floor(Math.random()*msgs.length)];
+  const a=document.createElement("div");
+  a.className=`alert-item ${l}`;
+  a.innerText=new Date().toLocaleTimeString()+" — "+m;
+  alerts.prepend(a);
+  if(alerts.children.length>5) alerts.removeChild(alerts.lastChild);
+  incident.style.display=l==="crit"?"block":"none";
+},6000);
+
+/* COST */
+setInterval(()=>{
+  const e=110+Math.random()*30, lb=30+Math.random()*10, d=20+Math.random()*10;
+  ec2.innerText=e.toFixed(0);
+  lb.innerText=lb.toFixed(0);
+  dt.innerText=d.toFixed(0);
+  total.innerText=(e+lb+d).toFixed(0);
+},8000);
 
 function toggleTheme(){document.body.classList.toggle("light");}
 </script>

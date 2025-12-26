@@ -2,101 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cloud Engineer Portfolio | Sandeep Balaveni</title>
+  <title>CloudWatch Dashboard | Sandeep Balaveni</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<header class="topbar">
+<header class="cw-header">
   <div>
-    <h1>CloudWatch Dashboard</h1>
-    <p>Production Systems – Portfolio Snapshot</p>
-  </div>
-  <div class="meta">
-    Region: ap-south-1 · Environment: production
+    <h1>CloudWatch</h1>
+    <span class="subtitle">Overview · Production · ap-south-1</span>
   </div>
 </header>
 
-<section class="widgets">
+<main class="dashboard">
 
-  <!-- CPU -->
+  <!-- 8 METRIC WIDGETS -->
   <div class="widget">
-    <span>EC2 CPU Utilization</span>
-    <b>42%</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,20 10,18 20,15 30,14 40,12 50,15 60,14 70,13 80,12 90,14 100,13"/>
-    </svg>
+    <div class="title">EC2 CPU Utilization</div>
+    <canvas id="cpu"></canvas>
   </div>
 
-  <!-- Memory -->
   <div class="widget">
-    <span>Memory Utilization</span>
-    <b>68%</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,22 20,20 40,18 60,17 80,16 100,15"/>
-    </svg>
+    <div class="title">Memory Utilization</div>
+    <canvas id="memory"></canvas>
   </div>
 
-  <!-- Disk -->
   <div class="widget">
-    <span>Disk Throughput</span>
-    <b>140 MB/s</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,25 10,10 20,22 30,8 40,20 50,12 60,18 70,9 80,15 90,10"/>
-    </svg>
+    <div class="title">Disk Read / Write</div>
+    <canvas id="disk"></canvas>
   </div>
 
-  <!-- Network In -->
   <div class="widget">
-    <span>Network In</span>
-    <b>24 Mbps</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,20 15,18 30,22 45,15 60,18 75,14 90,16"/>
-    </svg>
+    <div class="title">Network In</div>
+    <canvas id="netin"></canvas>
   </div>
 
-  <!-- Network Out -->
   <div class="widget">
-    <span>Network Out</span>
-    <b>19 Mbps</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,18 20,16 40,14 60,15 80,13 100,14"/>
-    </svg>
+    <div class="title">Network Out</div>
+    <canvas id="netout"></canvas>
   </div>
 
-  <!-- Request Count -->
   <div class="widget">
-    <span>Request Count</span>
-    <b>1.3K</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,25 20,18 40,10 60,12 80,8 100,10"/>
-    </svg>
+    <div class="title">Request Count</div>
+    <canvas id="req"></canvas>
   </div>
 
-  <!-- Error Rate -->
   <div class="widget">
-    <span>HTTP 5xx Errors</span>
-    <b>0.02%</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,28 50,28 100,28"/>
-    </svg>
+    <div class="title">HTTP 5XX Errors</div>
+    <canvas id="err"></canvas>
   </div>
 
-  <!-- Latency -->
   <div class="widget">
-    <span>Avg Latency</span>
-    <b>120 ms</b>
-    <svg viewBox="0 0 100 30">
-      <polyline points="0,20 25,18 50,17 75,16 100,15"/>
-    </svg>
+    <div class="title">Target Response Time</div>
+    <canvas id="lat"></canvas>
   </div>
 
-</section>
+</main>
 
-<footer>
-  Metrics represent deployed workloads handled during freelance cloud projects (2024)
+<footer class="cw-footer">
+  Portfolio dashboard representing deployed AWS workloads (2024)
 </footer>
 
+<script src="dashboard.js"></script>
 </body>
 </html>
